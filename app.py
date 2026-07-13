@@ -1,4 +1,5 @@
 import streamlit as st
+import streamlit.components.v1 as components
 import pandas as pd
 import numpy as np
 import plotly.express as px
@@ -8,6 +9,7 @@ from datetime import datetime, timedelta
 import json
 import requests
 from prisma_db import authenticate_user, create_user, save_prediction as prisma_save_prediction, get_user_predictions as prisma_get_user_predictions, get_user_notifications
+import prisma_db
 import matplotlib.pyplot as plt
 import seaborn as sns
 from fpdf import FPDF
@@ -22,7 +24,7 @@ from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils.dataframe import dataframe_to_rows
 
-from db import get_teams_by_sport, get_pitchers, save_future_match, get_future_matches
+from db import init_db, get_teams_by_sport, get_pitchers, save_future_match, get_future_matches
 from predict import predict_football, predict_nba, predict_mlb
 # ============================================================================
 # CONFIGURACIÓN DE LA PÁGINA
@@ -83,12 +85,23 @@ def init_api_keys():
 
 api_keys = init_api_keys()
 
+@st.cache_resource
+def init_storage():
+    """Asegura que las bases locales existan antes de usarlas."""
+    init_db()
+    prisma_db.init_prisma_db()
+
+init_storage()
+
 # Estado de sesión
 if 'user_id' not in st.session_state:
     st.session_state.user_id = None
 
 if 'user_tier' not in st.session_state:
     st.session_state.user_tier = "free"
+
+if 'user_role' not in st.session_state:
+    st.session_state.user_role = "USER"
 
 if 'favorite_teams' not in st.session_state:
     st.session_state.favorite_teams = []
@@ -421,6 +434,11 @@ def get_user_stats(user_id: str) -> Dict:
 def get_competitions() -> List[Dict]:
     """Obtiene las competencias activas"""
     return []
+
+
+def is_admin() -> bool:
+    """Indica si el usuario autenticado tiene rol de administrador."""
+    return st.session_state.get('user_role', 'USER') == 'ADMIN'
 
 # ============================================================================
 # COMPONENTES REUTILIZABLES
@@ -894,9 +912,10 @@ def page_ai_predictions():
             max_value=datetime.now() + timedelta(days=4)
         )
     
-    if st.button("🔄 Buscar Partidos"):
+    date_str = selected_date.strftime("%Y-%m-%d")
+    
+    if st.session_state.last_api_date != date_str:
         with st.spinner("Conectando con API-Football..."):
-            date_str = selected_date.strftime("%Y-%m-%d")
             st.session_state.api_matches = api_client.get_matches_by_date(date_str)
             st.session_state.last_api_date = date_str
             
@@ -944,6 +963,10 @@ def page_ai_predictions():
             st.info(f"... y {len(matches) - 15} partidos más. (Se muestran los primeros 15).")
             
     st.divider()
+
+    if not is_admin():
+        st.info("Los resultados detallados del modelo y la exportación consolidada están restringidos al rol ADMIN.")
+        return
 
     try:
         with open('model_results.json', 'r') as f:
@@ -1519,6 +1542,8 @@ def check_login():
     
     if st.session_state.logged_in:
         return True
+
+    set_sidebar_visibility(False)
         
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
@@ -1538,6 +1563,7 @@ def check_login():
                         st.session_state.logged_in = True
                         st.session_state.user_id = user.id
                         st.session_state.user_tier = user.plan
+                        st.session_state.user_role = getattr(user, "role", "USER")
                         st.success(f"Bienvenido de nuevo, {username}!")
                         st.rerun()
                     else:
@@ -1552,12 +1578,76 @@ def check_login():
                 
                 if submit_register:
                     try:
-                        new_user = create_user(new_username, new_password, plan_choice)
+                        new_user = create_user(new_username, new_password, plan_choice, "USER")
                         st.success("Usuario creado exitosamente. Por favor, inicia sesión.")
                     except Exception as e:
                         st.error(f"Error creando usuario (puede que ya exista): {e}")
 
     return False
+
+def logout():
+    """Cierra la sesión actual y limpia el estado relacionado al usuario."""
+    keys_to_clear = [
+        'logged_in',
+        'user_id',
+        'user_tier',
+        'user_role',
+        'favorite_teams',
+        'selected_competitions',
+        'api_matches',
+        'last_api_date'
+    ]
+    for key in keys_to_clear:
+        if key in st.session_state:
+            del st.session_state[key]
+    st.rerun()
+
+def set_sidebar_visibility(visible: bool):
+    """Muestra u oculta el sidebar nativo de Streamlit."""
+    display = "block" if visible else "none"
+    visibility = "visible" if visible else "hidden"
+    width = "21rem" if visible else "0rem"
+    margin_left = "0" if not visible else ""
+
+    components.html(
+        f"""
+        <script>
+        const doc = window.parent.document;
+        const sidebar = doc.querySelector('section[data-testid="stSidebar"]');
+        const openBtn = doc.querySelector('button[data-testid="collapsedControl"]');
+        const allButtons = Array.from(doc.querySelectorAll('button'));
+        const toggleButtons = allButtons.filter(btn => {{
+            const label = btn.getAttribute('aria-label') || '';
+            return label.includes('sidebar') || label.includes('Sidebar');
+        }});
+        const main = doc.querySelector('section[data-testid="stMain"]');
+
+        if (sidebar) {{
+            sidebar.style.display = '{display}';
+            sidebar.style.visibility = '{visibility}';
+            sidebar.style.minWidth = '{width}';
+            sidebar.style.maxWidth = '{width}';
+            sidebar.style.width = '{width}';
+        }}
+
+        if (openBtn) {{
+            openBtn.style.display = '{display}';
+            openBtn.style.visibility = '{visibility}';
+        }}
+
+        toggleButtons.forEach(btn => {{
+            btn.style.display = '{display}';
+            btn.style.visibility = '{visibility}';
+        }});
+
+        if (main && '{margin_left}') {{
+            main.style.marginLeft = '{margin_left}';
+        }}
+        </script>
+        """,
+        height=0,
+        width=0,
+    )
 
 def page_create_prediction():
     """Página para crear predicciones manuales"""
@@ -1661,14 +1751,20 @@ def main():
     if not check_login():
         return
 
-    # Sidebar
-    st.sidebar.title("⚽ SportsPredict Pro")
-    st.sidebar.markdown("---")
+    set_sidebar_visibility(True)
 
-    # Información del usuario
+    # Sidebar
     with st.sidebar:
-        st.write(f"**Usuario ID:** `{st.session_state.user_id[:12]}...`")
+        st.title("⚽ SportsPredict Pro")
+        st.markdown("---")
+
+        # Información del usuario
+        user_id = st.session_state.user_id or ""
+        st.write(f"**Usuario ID:** `{user_id[:12]}...`")
         st.write(f"**Plan:** `{st.session_state.user_tier.upper()}`")
+        st.write(f"**Rol:** `{st.session_state.user_role.upper()}`")
+        if st.button("🚪 Cerrar Sesión", use_container_width=True, type="secondary"):
+            logout()
         st.divider()
 
     # Menú de navegación moderno
@@ -1686,10 +1782,10 @@ def main():
     }
 
     pg = st.navigation(pages)
-    st.sidebar.divider()
 
-    # Información adicional
+    # Información adicional y botón de cerrar sesión al final del sidebar
     with st.sidebar:
+        st.divider()
         st.write("### 📱 Información")
         st.info("""
         **SportsPredict Pro v1.0**

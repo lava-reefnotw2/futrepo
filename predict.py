@@ -78,6 +78,9 @@ def predict_football(home_team, away_team):
     
     # Manejar salida keras o sklearn
     if hasattr(model, 'predict_proba'):
+        import xgboost as xgb
+        if isinstance(model, xgb.XGBClassifier):
+            model.set_params(device='cpu')
         probs = model.predict_proba(X_scaled)[0]
     else:
         probs = model.predict(X_scaled)[0]
@@ -87,9 +90,9 @@ def predict_football(home_team, away_team):
             probs = [1 - p, p] # Asumimos 0=Visita, 1=Local. Ajustar segun modelo real.
     
     return {
-        'Local': float(probs[1]) if len(probs) > 1 else float(probs[0]),
-        'Visitante': float(probs[0]) if len(probs) > 1 else 1 - float(probs[0]),
-        'Empate': 0.0 # Simplificado
+        'local': float(probs[1]) if len(probs) > 1 else float(probs[0]),
+        'visitante': float(probs[0]) if len(probs) > 1 else 1 - float(probs[0]),
+        'empate': 0.0 # Simplificado
     }
 
 def predict_football_extras(home_team, away_team):
@@ -147,6 +150,9 @@ def predict_nba(home_team, away_team):
     X_scaled = scaler.transform(df_features)
     
     if hasattr(model, 'predict_proba'):
+        import xgboost as xgb
+        if isinstance(model, xgb.XGBClassifier):
+            model.set_params(device='cpu')
         probs = model.predict_proba(X_scaled)[0]
     else:
         probs = model.predict(X_scaled)[0]
@@ -155,8 +161,8 @@ def predict_nba(home_team, away_team):
             probs = [1 - p, p]
             
     return {
-        'Local': float(probs[1]) if len(probs) > 1 else float(probs[0]),
-        'Visitante': float(probs[0]) if len(probs) > 1 else 1 - float(probs[0])
+        'local': float(probs[1]) if len(probs) > 1 else float(probs[0]),
+        'visitante': float(probs[0]) if len(probs) > 1 else 1 - float(probs[0])
     }
 
 def predict_mlb(home_team, away_team, home_pitcher=None, away_pitcher=None):
@@ -184,6 +190,9 @@ def predict_mlb(home_team, away_team, home_pitcher=None, away_pitcher=None):
     X_scaled = scaler.transform(df_features)
     
     if hasattr(model, 'predict_proba'):
+        import xgboost as xgb
+        if isinstance(model, xgb.XGBClassifier):
+            model.set_params(device='cpu')
         probs = model.predict_proba(X_scaled)[0]
     else:
         probs = model.predict(X_scaled)[0]
@@ -192,6 +201,6 @@ def predict_mlb(home_team, away_team, home_pitcher=None, away_pitcher=None):
             probs = [1 - p, p]
             
     return {
-        'Local': float(probs[1]) if len(probs) > 1 else float(probs[0]),
-        'Visitante': float(probs[0]) if len(probs) > 1 else 1 - float(probs[0])
+        'local': float(probs[1]) if len(probs) > 1 else float(probs[0]),
+        'visitante': float(probs[0]) if len(probs) > 1 else 1 - float(probs[0])
     }

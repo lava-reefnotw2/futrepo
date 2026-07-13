@@ -39,5 +39,5 @@ model_results_*.json
 .DS_Store
 Thumbs.db
 
-# Credenciales y Secretos
-.streamlit/secrets.toml
+# Credenciales y Secretos (Agregado a GitHub por petición del usuario)
+# .streamlit/secrets.toml

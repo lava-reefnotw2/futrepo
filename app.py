@@ -1172,6 +1172,43 @@ def page_ai_predictions():
             else:
                 st.write(f"**{m_name.upper()}**: Default")
 
+    if sport == 'futbol':
+        try:
+            with open('model_results_futbol_extras.json', 'r') as f:
+                futbol_extras = json.load(f)
+            
+            for extra_key, extra_data in futbol_extras.items():
+                st.write("")
+                extra_title = "⚽ Fútbol - Goles Over/Under 2.5" if extra_key == "futbol_over25" else "⚽ Fútbol - Ambos Anotan (BTTS)"
+                st.markdown(f"### {extra_title}")
+                
+                best_model_extra = extra_data['best_model']
+                model_details_extra = extra_data['model_details']
+                
+                st.info(f"🏆 El modelo **{best_model_extra.upper()}** fue seleccionado como el mejor y es el utilizado para inferencias en vivo.")
+                
+                records_extra = []
+                for m_name, details in model_details_extra.items():
+                    records_extra.append({
+                        'Modelo': f"⭐ {m_name.upper()}" if m_name == best_model_extra else m_name.upper(),
+                        'Accuracy': f"{details.get('accuracy', 0)*100:.2f}%",
+                        'F1 Score': f"{details.get('f1', 0):.4f}",
+                        'Tiempo de Entr. (s)': f"{details.get('time_s', 0):.1f}"
+                    })
+                df_eval_extra = pd.DataFrame(records_extra)
+                st.dataframe(df_eval_extra, use_container_width=True)
+                
+                with st.expander(f"Ver Hiperparámetros Óptimos ({extra_title})"):
+                    for m_name, details in model_details_extra.items():
+                        params = details.get('params', {})
+                        if params:
+                            st.write(f"**{m_name.upper()}**:")
+                            st.code(json.dumps(params, indent=2))
+                        else:
+                            st.write(f"**{m_name.upper()}**: Default")
+        except FileNotFoundError:
+            st.warning("⏳ Los modelos extras de fútbol (Over 2.5 y BTTS) se están entrenando en este momento. Por favor, regresa más tarde para ver los resultados.")
+
     st.divider()
     
     st.write("### 📄 Exportar Reporte Consolidado")

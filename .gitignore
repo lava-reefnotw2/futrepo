@@ -16,6 +16,8 @@ prisma/dev.db
 prisma/dev.db-journal
 *.sqlite3
 *.db
+!sports_predict.db
+!sports_predict.db
 
 # Modelos pesados de Machine Learning (Trackeados usando Git LFS)
 # models/*.pkl

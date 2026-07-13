@@ -1,0 +1,44 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider             = "prisma-client-py"
+  interface            = "sync"
+  recursive_type_depth = 5
+}
+
+model User {
+  id            String         @id @default(uuid())
+  username      String         @unique
+  password_hash String
+  plan          String         @default("free")
+  predictions   Prediction[]
+  notifications Notification[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+}
+
+model Prediction {
+  id                 String   @id @default(uuid())
+  userId             String
+  user               User     @relation(fields: [userId], references: [id])
+  matchId            Int
+  predictedHomeScore Int?
+  predictedAwayScore Int?
+  predictedWinner    String?
+  confidenceLevel    Float?
+  isManual           Boolean  @default(false)
+  aiPredictionData   String?
+  createdAt          DateTime @default(now())
+}
+
+model Notification {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  subject     String
+  description String
+  createdAt   DateTime @default(now())
+}

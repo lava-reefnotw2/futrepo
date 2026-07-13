@@ -1,0 +1,40 @@
+# Entornos virtuales
+venv/
+env/
+.env
+.venv/
+
+# Archivos de caché y compilados
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Bases de datos
+prisma/dev.db
+prisma/dev.db-journal
+*.sqlite3
+*.db
+
+# Modelos pesados de Machine Learning
+models/*.pkl
+models/*.h
+models/*.keras
+models/*.h5
+
+# Datasets pesados
+datasets/*.csv
+datasets/*.xlsx
+datasets/*.json
+
+# Reportes generados localmente
+*.pdf
+*.docx
+*.xlsx
+model_results_*.json
+
+# Logs y SO
+*.log
+.DS_Store
+Thumbs.db

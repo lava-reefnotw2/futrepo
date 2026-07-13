@@ -161,11 +161,25 @@ class APIClient:
             
             if response.status_code == 200:
                 data = response.json()
+                errors = data.get('errors')
+                if errors:
+                    if isinstance(errors, dict) and any(errors.values()):
+                        err_msg = ", ".join([f"{k}: {v}" for k, v in errors.items()])
+                        raise ValueError(err_msg)
+                    elif isinstance(errors, list) and len(errors) > 0:
+                        raise ValueError(str(errors))
+                
                 if 'response' in data:
-                    return data['response']
+                    allowed_countries = {'italy', 'spain', 'france', 'germany', 'england'}
+                    return [
+                        m for m in data['response']
+                        if m.get('league', {}).get('country', '').lower() in allowed_countries
+                    ]
+            else:
+                raise ValueError(f"HTTP Status {response.status_code}")
             return self._get_mock_matches()
         except Exception as e:
-            st.warning(f"Error obteniendo partidos de API-Football: {e}")
+            st.warning(f"Error obteniendo partidos de API-Football: {e}. Se mostrarán partidos de prueba.")
             return self._get_mock_matches()
 
     def get_upcoming_matches(self, days: int = 7) -> List[Dict]:
@@ -178,6 +192,7 @@ class APIClient:
 
             # Obtener partidos de los próximos días
             matches = []
+            allowed_countries = {'italy', 'spain', 'france', 'germany', 'england'}
             for i in range(days):
                 date = (datetime.now() + timedelta(days=i)).strftime("%Y-%m-%d")
                 response = self.session.get(
@@ -188,12 +203,25 @@ class APIClient:
 
                 if response.status_code == 200:
                     data = response.json()
+                    errors = data.get('errors')
+                    if errors:
+                        if isinstance(errors, dict) and any(errors.values()):
+                            err_msg = ", ".join([f"{k}: {v}" for k, v in errors.items()])
+                            raise ValueError(err_msg)
+                        elif isinstance(errors, list) and len(errors) > 0:
+                            raise ValueError(str(errors))
                     if 'response' in data:
-                        matches.extend(data['response'][:5])  # Limitar a 5 por día
+                        filtered_day = [
+                            m for m in data['response']
+                            if m.get('league', {}).get('country', '').lower() in allowed_countries
+                        ]
+                        matches.extend(filtered_day[:5])  # Limitar a 5 por día
+                else:
+                    raise ValueError(f"HTTP Status {response.status_code}")
 
             return matches[:10]
         except Exception as e:
-            st.warning(f"Error obteniendo partidos de API-Football: {e}")
+            st.warning(f"Error obteniendo partidos de API-Football: {e}. Se mostrarán partidos de prueba.")
             return self._get_mock_matches()
 
     def get_team_stats(self, team_id: int) -> Dict:
@@ -210,10 +238,20 @@ class APIClient:
             )
 
             if response.status_code == 200:
-                return response.json().get('response', {})
+                data = response.json()
+                errors = data.get('errors')
+                if errors:
+                    if isinstance(errors, dict) and any(errors.values()):
+                        err_msg = ", ".join([f"{k}: {v}" for k, v in errors.items()])
+                        raise ValueError(err_msg)
+                    elif isinstance(errors, list) and len(errors) > 0:
+                        raise ValueError(str(errors))
+                return data.get('response', {})
+            else:
+                raise ValueError(f"HTTP Status {response.status_code}")
             return self._get_mock_team_stats()
         except Exception as e:
-            st.warning(f"Error obteniendo estadísticas: {e}")
+            st.warning(f"Error obteniendo estadísticas: {e}. Se mostrarán estadísticas de prueba.")
             return self._get_mock_team_stats()
 
     def get_predictions(self, fixture_id: int) -> Dict:
@@ -230,10 +268,20 @@ class APIClient:
             )
 
             if response.status_code == 200:
-                return response.json().get('response', [{}])[0]
+                data = response.json()
+                errors = data.get('errors')
+                if errors:
+                    if isinstance(errors, dict) and any(errors.values()):
+                        err_msg = ", ".join([f"{k}: {v}" for k, v in errors.items()])
+                        raise ValueError(err_msg)
+                    elif isinstance(errors, list) and len(errors) > 0:
+                        raise ValueError(str(errors))
+                return data.get('response', [{}])[0]
+            else:
+                raise ValueError(f"HTTP Status {response.status_code}")
             return self._get_mock_prediction()
         except Exception as e:
-            st.warning(f"Error obteniendo predicciones: {e}")
+            st.warning(f"Error obteniendo predicciones: {e}. Se mostrarán predicciones de prueba.")
             return self._get_mock_prediction()
 
     def get_head_to_head(self, team1_id: int, team2_id: int) -> List[Dict]:
@@ -250,10 +298,20 @@ class APIClient:
             )
 
             if response.status_code == 200:
-                return response.json().get('response', [])
+                data = response.json()
+                errors = data.get('errors')
+                if errors:
+                    if isinstance(errors, dict) and any(errors.values()):
+                        err_msg = ", ".join([f"{k}: {v}" for k, v in errors.items()])
+                        raise ValueError(err_msg)
+                    elif isinstance(errors, list) and len(errors) > 0:
+                        raise ValueError(str(errors))
+                return data.get('response', [])
+            else:
+                raise ValueError(f"HTTP Status {response.status_code}")
             return self._get_mock_h2h()
         except Exception as e:
-            st.warning(f"Error obteniendo H2H: {e}")
+            st.warning(f"Error obteniendo H2H: {e}. Se mostrarán partidos de prueba.")
             return self._get_mock_h2h()
 
     # ==================== DATOS MOCK ====================
@@ -263,7 +321,7 @@ class APIClient:
         """Retorna datos de ejemplo para partidos"""
         return [
             {
-                'fixture': {'id': 1001, 'date': '2024-01-20T20:00:00+00:00', 'status': 'NS'},
+                'fixture': {'id': 1001, 'date': '2026-07-13T20:00:00+00:00', 'status': 'NS'},
                 'league': {'name': 'La Liga', 'country': 'Spain', 'logo': ''},
                 'teams': {
                     'home': {'id': 541, 'name': 'Real Madrid', 'logo': ''},
@@ -272,7 +330,7 @@ class APIClient:
                 'goals': {'home': None, 'away': None}
             },
             {
-                'fixture': {'id': 1002, 'date': '2024-01-20T15:00:00+00:00', 'status': 'NS'},
+                'fixture': {'id': 1002, 'date': '2026-07-13T15:00:00+00:00', 'status': 'NS'},
                 'league': {'name': 'Premier League', 'country': 'England', 'logo': ''},
                 'teams': {
                     'home': {'id': 42, 'name': 'Manchester City', 'logo': ''},
@@ -281,10 +339,64 @@ class APIClient:
                 'goals': {'home': None, 'away': None}
             },
             {
-                'fixture': {'id': 1003, 'date': '2024-01-19T19:30:00+00:00', 'status': 'NS'},
+                'fixture': {'id': 1003, 'date': '2026-07-13T19:30:00+00:00', 'status': 'NS'},
                 'league': {'name': 'Bundesliga', 'country': 'Germany', 'logo': ''},
                 'teams': {
                     'home': {'id': 25, 'name': 'Bayern Munich', 'logo': ''},
+                    'away': {'id': 165, 'name': 'Borussia Dortmund', 'logo': ''}
+                },
+                'goals': {'home': None, 'away': None}
+            },
+            {
+                'fixture': {'id': 1004, 'date': '2026-07-13T18:00:00+00:00', 'status': 'NS'},
+                'league': {'name': 'La Liga', 'country': 'Spain', 'logo': ''},
+                'teams': {
+                    'home': {'id': 542, 'name': 'Atletico Madrid', 'logo': ''},
+                    'away': {'id': 529, 'name': 'Barcelona', 'logo': ''}
+                },
+                'goals': {'home': None, 'away': None}
+            },
+            {
+                'fixture': {'id': 1005, 'date': '2026-07-13T21:00:00+00:00', 'status': 'NS'},
+                'league': {'name': 'La Liga', 'country': 'Spain', 'logo': ''},
+                'teams': {
+                    'home': {'id': 548, 'name': 'Real Sociedad', 'logo': ''},
+                    'away': {'id': 541, 'name': 'Real Madrid', 'logo': ''}
+                },
+                'goals': {'home': None, 'away': None}
+            },
+            {
+                'fixture': {'id': 1006, 'date': '2026-07-13T17:30:00+00:00', 'status': 'NS'},
+                'league': {'name': 'Premier League', 'country': 'England', 'logo': ''},
+                'teams': {
+                    'home': {'id': 49, 'name': 'Arsenal', 'logo': ''},
+                    'away': {'id': 45, 'name': 'Chelsea', 'logo': ''}
+                },
+                'goals': {'home': None, 'away': None}
+            },
+            {
+                'fixture': {'id': 1007, 'date': '2026-07-13T20:00:00+00:00', 'status': 'NS'},
+                'league': {'name': 'Premier League', 'country': 'England', 'logo': ''},
+                'teams': {
+                    'home': {'id': 33, 'name': 'Manchester United', 'logo': ''},
+                    'away': {'id': 47, 'name': 'Tottenham', 'logo': ''}
+                },
+                'goals': {'home': None, 'away': None}
+            },
+            {
+                'fixture': {'id': 1008, 'date': '2026-07-13T15:30:00+00:00', 'status': 'NS'},
+                'league': {'name': 'Bundesliga', 'country': 'Germany', 'logo': ''},
+                'teams': {
+                    'home': {'id': 168, 'name': 'Bayer Leverkusen', 'logo': ''},
+                    'away': {'id': 25, 'name': 'Bayern Munich', 'logo': ''}
+                },
+                'goals': {'home': None, 'away': None}
+            },
+            {
+                'fixture': {'id': 1009, 'date': '2026-07-13T18:30:00+00:00', 'status': 'NS'},
+                'league': {'name': 'Bundesliga', 'country': 'Germany', 'logo': ''},
+                'teams': {
+                    'home': {'id': 173, 'name': 'RB Leipzig', 'logo': ''},
                     'away': {'id': 165, 'name': 'Borussia Dortmund', 'logo': ''}
                 },
                 'goals': {'home': None, 'away': None}
@@ -895,7 +1007,33 @@ def page_ai_predictions():
     """)
 
     st.divider()
-    
+
+    # Inicializar el estado de la predicción activa
+    if 'active_prediction' not in st.session_state:
+        st.session_state.active_prediction = None
+
+    # Mostrar la última predicción realizada si está activa
+    if st.session_state.active_prediction:
+        act = st.session_state.active_prediction
+        st.markdown("<div style='border: 2px solid #667eea; padding: 20px; border-radius: 12px; margin-bottom: 20px; background-color: #1e1e1e;'>", unsafe_allow_html=True)
+        st.subheader("🔮 Último Análisis de IA Generado")
+        col_m_left, col_m_right = st.columns([3, 2])
+        with col_m_left:
+            st.write(f"### {act['home_team']} vs {act['away_team']}")
+            st.success(f"Favorito: **{act['pred_label'].upper()}**")
+            st.info(f"📈 **Confianza:** {act['confidence']*100:.1f}%")
+        with col_m_right:
+            labels = ['Visitante', 'Empate', 'Local']
+            values = [act['probs']['visitante']*100, act['probs']['empate']*100, act['probs']['local']*100]
+            fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.5, marker_colors=['#f5576c', '#aaaaaa', '#667eea'])])
+            fig.update_layout(height=220, margin=dict(t=20, b=0, l=0, r=0))
+            st.plotly_chart(fig, use_container_width=True)
+        
+        if st.button("❌ Cerrar Análisis", use_container_width=True):
+            st.session_state.active_prediction = None
+            st.rerun()
+        st.markdown("</div>", unsafe_allow_html=True)
+
     st.subheader("📅 Partidos Futuros (Mundial)")
     st.write("Selecciona una fecha (hasta 4 días en el futuro) para ver los próximos partidos de fútbol y obtener una predicción de nuestra IA.")
     
@@ -907,9 +1045,9 @@ def page_ai_predictions():
     with col_date:
         selected_date = st.date_input(
             "Fecha de los partidos",
-            value=datetime.now(),
-            min_value=datetime.now(),
-            max_value=datetime.now() + timedelta(days=4)
+            value=datetime.now().date(),
+            min_value=datetime.now().date(),
+            max_value=(datetime.now() + timedelta(days=4)).date()
         )
     
     date_str = selected_date.strftime("%Y-%m-%d")
@@ -918,49 +1056,74 @@ def page_ai_predictions():
         with st.spinner("Conectando con API-Football..."):
             st.session_state.api_matches = api_client.get_matches_by_date(date_str)
             st.session_state.last_api_date = date_str
+
+    # Obtener IDs de partidos ya predichos por el usuario
+    user_preds = get_user_predictions(st.session_state.user_id)
+    predicted_match_ids = {int(p['match_id']) for p in user_preds if p.get('match_id') is not None}
             
     if st.session_state.api_matches:
-        matches = st.session_state.api_matches
-        st.success(f"Se encontraron {len(matches)} partidos programados para el {st.session_state.last_api_date}.")
+        # Filtrar partidos que ya fueron predichos
+        matches = [m for m in st.session_state.api_matches if m.get('fixture', {}).get('id') not in predicted_match_ids]
         
-        for i, match in enumerate(matches[:15]): 
-            fixture = match.get('fixture', {})
-            teams = match.get('teams', {})
-            league = match.get('league', {})
+        if matches:
+            st.success(f"Se encontraron {len(matches)} partidos programados para el {st.session_state.last_api_date} (excluyendo tus predicciones).")
             
-            home_team = teams.get('home', {}).get('name', 'Local')
-            away_team = teams.get('away', {}).get('name', 'Visitante')
-            match_time = fixture.get('date', '').split('T')[1][:5] if 'T' in fixture.get('date', '') else ''
-            
-            with st.container():
-                st.markdown(f"<div style='border:1px solid #333; padding: 15px; border-radius: 8px; margin-bottom: 10px; background-color: #1e1e1e;'>", unsafe_allow_html=True)
-                col1, col2, col3 = st.columns([2, 3, 2])
-                with col1:
-                    st.write(f"🏆 **{league.get('name', 'Liga')}**")
-                    st.write(f"⏱️ {match_time}")
-                with col2:
-                    st.write(f"🏠 **{home_team}**")
-                    st.write(f"✈️ **{away_team}**")
+            for i, match in enumerate(matches[:15]): 
+                fixture = match.get('fixture', {})
+                teams = match.get('teams', {})
+                league = match.get('league', {})
                 
-                with col3:
-                    if st.button(f"🔮 Predecir", key=f"pred_api_{i}", use_container_width=True):
-                        with st.spinner("Analizando historial..."):
-                            try:
-                                probs = predict_football(home_team, away_team)
-                                labels = ['Visitante', 'Empate', 'Local']
-                                values = [probs['visitante']*100, probs['empate']*100, probs['local']*100]
-                                pred_label = max(probs, key=probs.get)
-                                st.success(f"Favorito: **{pred_label.upper()}**")
-                                
-                                fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.5, marker_colors=['#f5576c', '#aaaaaa', '#667eea'])])
-                                fig.update_layout(title_text="Probabilidades", height=300, margin=dict(t=30, b=0, l=0, r=0))
-                                st.plotly_chart(fig, use_container_width=True)
-                            except Exception as e:
-                                st.error(f"Error: {str(e)}")
-                st.markdown("</div>", unsafe_allow_html=True)
-        
-        if len(matches) > 15:
-            st.info(f"... y {len(matches) - 15} partidos más. (Se muestran los primeros 15).")
+                home_team = teams.get('home', {}).get('name', 'Local')
+                away_team = teams.get('away', {}).get('name', 'Visitante')
+                match_time = fixture.get('date', '').split('T')[1][:5] if 'T' in fixture.get('date', '') else ''
+                
+                with st.container():
+                    st.markdown(f"<div style='border:1px solid #333; padding: 15px; border-radius: 8px; margin-bottom: 10px; background-color: #1e1e1e;'>", unsafe_allow_html=True)
+                    col1, col2, col3 = st.columns([2, 3, 2])
+                    with col1:
+                        st.write(f"🏆 **{league.get('name', 'Liga')}**")
+                        st.write(f"⏱️ {match_time}")
+                    with col2:
+                        st.write(f"🏠 **{home_team}**")
+                        st.write(f"✈️ **{away_team}**")
+                    
+                    with col3:
+                        # Usar el ID del fixture en la clave del botón para evitar colisiones
+                        btn_key = f"pred_api_{fixture.get('id', i)}"
+                        if st.button(f"🔮 Predecir", key=btn_key, use_container_width=True):
+                            with st.spinner("Analizando historial..."):
+                                try:
+                                    probs = predict_football(home_team, away_team)
+                                    pred_label = max(probs, key=probs.get)
+                                    
+                                    # Guardar en la base de datos de Prisma del usuario
+                                    fid = fixture.get('id') if fixture.get('id') else int(time.time())
+                                    prisma_save_prediction(
+                                        user_id=st.session_state.user_id,
+                                        match_id=fid,
+                                        predicted_winner=pred_label.upper(),
+                                        confidence=max(probs.values()),
+                                        is_manual=False,
+                                        ai_data=json.dumps({"prediccion_ia": pred_label, "probs": probs})
+                                    )
+                                    
+                                    # Guardar en session state para el banner
+                                    st.session_state.active_prediction = {
+                                        'home_team': home_team,
+                                        'away_team': away_team,
+                                        'pred_label': pred_label,
+                                        'probs': probs,
+                                        'confidence': max(probs.values())
+                                    }
+                                    st.rerun()
+                                except Exception as e:
+                                    st.error(f"Error: {str(e)}")
+                    st.markdown("</div>", unsafe_allow_html=True)
+            
+            if len(matches) > 15:
+                st.info(f"... y {len(matches) - 15} partidos más. (Se muestran los primeros 15).")
+        else:
+            st.info("Ya has realizado predicciones para todos los partidos disponibles en esta fecha.")
             
     st.divider()
 

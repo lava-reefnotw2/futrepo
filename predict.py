@@ -89,11 +89,25 @@ def predict_football(home_team, away_team):
             p = probs[0]
             probs = [1 - p, p] # Asumimos 0=Visita, 1=Local. Ajustar segun modelo real.
     
-    return {
-        'local': float(probs[1]) if len(probs) > 1 else float(probs[0]),
-        'visitante': float(probs[0]) if len(probs) > 1 else 1 - float(probs[0]),
-        'empate': 0.0 # Simplificado
-    }
+    if len(probs) == 3:
+        return {
+            'local': float(probs[2]),
+            'visitante': float(probs[0]),
+            'empate': float(probs[1])
+        }
+    elif len(probs) == 2:
+        return {
+            'local': float(probs[1]),
+            'visitante': float(probs[0]),
+            'empate': 0.0
+        }
+    else:
+        p = float(probs[0])
+        return {
+            'local': p,
+            'visitante': 1.0 - p,
+            'empate': 0.0
+        }
 
 def predict_football_extras(home_team, away_team):
     # Intentar cargar modelos extra

@@ -17,11 +17,11 @@ prisma/dev.db-journal
 *.sqlite3
 *.db
 
-# Modelos pesados de Machine Learning
-models/*.pkl
-models/*.h
-models/*.keras
-models/*.h5
+# Modelos pesados de Machine Learning (Trackeados usando Git LFS)
+# models/*.pkl
+# models/*.h
+# models/*.keras
+# models/*.h5
 
 # Datasets pesados
 datasets/*.csv
@@ -38,3 +38,6 @@ model_results_*.json
 *.log
 .DS_Store
 Thumbs.db
+
+# Credenciales y Secretos
+.streamlit/secrets.toml

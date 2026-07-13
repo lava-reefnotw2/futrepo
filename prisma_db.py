@@ -45,6 +45,12 @@ def _load_secrets():
 
 def get_db_config():
     secrets = _load_secrets()
+    
+    # Check if DATABASE_URL is available
+    database_url = secrets.get("DATABASE_URL", os.getenv("DATABASE_URL"))
+    if database_url:
+        return {"database_url": database_url}
+        
     return {
         "host": secrets.get("POSTGRES_HOST", os.getenv("POSTGRES_HOST", "localhost")),
         "port": int(secrets.get("POSTGRES_PORT", os.getenv("POSTGRES_PORT", 5432))),
@@ -57,13 +63,19 @@ def get_db_config():
 @contextmanager
 def get_connection(dbname=None):
     config = get_db_config()
-    conn = psycopg2.connect(
-        host=config["host"],
-        port=config["port"],
-        dbname=dbname or config["dbname"],
-        user=config["user"],
-        password=config["password"],
-    )
+    
+    if "database_url" in config:
+        # Ignore dbname override if we are using DATABASE_URL, as the URL already contains the target db
+        conn = psycopg2.connect(config["database_url"])
+    else:
+        conn = psycopg2.connect(
+            host=config["host"],
+            port=config["port"],
+            dbname=dbname or config["dbname"],
+            user=config["user"],
+            password=config["password"],
+        )
+        
     try:
         yield conn
         conn.commit()
@@ -86,12 +98,19 @@ def parse_dates(row_dict):
 
 def ensure_database_exists():
     config = get_db_config()
-    with get_connection("postgres") as conn:
-        conn.autocommit = True
-        with conn.cursor() as cur:
-            cur.execute("SELECT 1 FROM pg_database WHERE datname = %s", (config["dbname"],))
-            if cur.fetchone() is None:
-                cur.execute(f'CREATE DATABASE "{config["dbname"]}"')
+    if "database_url" in config:
+        # In cloud environments like Render, the database is already created and we use DATABASE_URL
+        return
+
+    try:
+        with get_connection("postgres") as conn:
+            conn.autocommit = True
+            with conn.cursor() as cur:
+                cur.execute("SELECT 1 FROM pg_database WHERE datname = %s", (config["dbname"],))
+                if cur.fetchone() is None:
+                    cur.execute(f'CREATE DATABASE "{config["dbname"]}"')
+    except Exception as e:
+        print(f"Warning: Could not check or create database. Error: {e}")
 
 
 def init_prisma_db():

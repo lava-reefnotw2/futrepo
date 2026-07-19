@@ -102,6 +102,9 @@ def train_sport(sport_name, df_ready, target_col, split_index):
                 params = {k: all_p[k] for k in ['max_depth', 'n_estimators', 'min_samples_split'] if k in all_p}
             elif m_name == 'logreg':
                 params = {k: all_p[k] for k in ['C', 'penalty', 'solver'] if k in all_p}
+            elif m_name == 'cb':
+                params = {k: all_p[k] for k in ['learning_rate', 'depth', 'iterations'] if k in all_p}
+
                 
         model_details[m_name] = {
             'accuracy': float(metrics['accuracy']),
@@ -121,18 +124,26 @@ def train_sport(sport_name, df_ready, target_col, split_index):
 # MAIN
 # ============================================================================
 
-def get_chronological_split(df, date_col):
-    """Filtra juegos futuros, ordena por fecha y devuelve el índice del último año."""
-    df[date_col] = pd.to_datetime(df[date_col])
-    # Filtrar partidos que están en el futuro y no tienen resultado
-    df = df[df[date_col] < datetime.now()].copy()
-    df = df.sort_values(date_col).reset_index(drop=True)
-    
-    max_date = df[date_col].max()
-    test_start_date = max_date - timedelta(days=365)
-    
-    split_index = df[df[date_col] >= test_start_date].index.min()
-    return df, split_index
+def get_chronological_split(df, date_col=None, test_ratio=0.2):
+    """
+    Filtra juegos futuros, ordena por fecha si existe columna y devuelve el índice de corte.
+    Si no existe la columna de fecha, realiza división por índice asumiendo orden cronológico preexistente.
+    """
+    if date_col and date_col in df.columns:
+        df[date_col] = pd.to_datetime(df[date_col])
+        # Filtrar partidos que están en el futuro y no tienen resultado
+        df = df[df[date_col] < datetime.now()].copy()
+        df = df.sort_values(date_col).reset_index(drop=True)
+        
+        max_date = df[date_col].max()
+        test_start_date = max_date - timedelta(days=365)
+        
+        split_index = df[df[date_col] >= test_start_date].index.min()
+        return df, split_index
+    else:
+        # Partición cronológica por índice directo (asume pre-ordenado)
+        split_index = int(len(df) * (1 - test_ratio))
+        return df, split_index
 
 def main():
     start_total = time.time()
@@ -146,29 +157,52 @@ def main():
     # ---- FUTBOL ----
     print("\nCargando dataset de Futbol...")
     df_football = load_dataset("FootballMatches_cleaned.csv")
-    df_football = df_football.dropna(subset=['FTResult', 'MatchDate'])
-    df_football, split_idx_fb = get_chronological_split(df_football, 'MatchDate')
+    date_col_fb = 'MatchDate' if 'MatchDate' in df_football.columns else None
+    
+    subset_drop = ['FTResult']
+    if date_col_fb:
+        subset_drop.append(date_col_fb)
+    df_football = df_football.dropna(subset=subset_drop)
+    
+    df_football, split_idx_fb = get_chronological_split(df_football, date_col_fb)
     print(f"Registros totales pasados: {len(df_football)}")
-    cols_to_drop = ['MatchDate', 'HomeTeam', 'AwayTeam', 'FTHome', 'FTAway']
+    
+    cols_to_drop = [c for c in ['MatchDate', 'HomeTeam', 'AwayTeam', 'FTHome', 'FTAway'] if c in df_football.columns]
     df_football_ml = df_football.drop(columns=cols_to_drop)
     all_results['futbol'] = train_sport('futbol', df_football_ml, 'FTResult', split_idx_fb)
     
     # ---- NBA ----
     print("\nCargando dataset de NBA...")
     df_nba_ml = load_dataset("NBA_featured.csv")
-    df_nba_ml = df_nba_ml.dropna(subset=['homeWin', 'gameDate'])
-    df_nba_ml, split_idx_nba = get_chronological_split(df_nba_ml, 'gameDate')
+    date_col_nba = 'gameDate' if 'gameDate' in df_nba_ml.columns else None
+    
+    subset_drop_nba = ['homeWin']
+    if date_col_nba:
+        subset_drop_nba.append(date_col_nba)
+    df_nba_ml = df_nba_ml.dropna(subset=subset_drop_nba)
+    
+    df_nba_ml, split_idx_nba = get_chronological_split(df_nba_ml, date_col_nba)
     print(f"Registros totales pasados: {len(df_nba_ml)}")
-    df_nba_ml = df_nba_ml.drop(columns=['gameDate', 'hometeamName', 'awayteamName'])
+    
+    cols_to_drop_nba = [c for c in ['gameDate', 'hometeamName', 'awayteamName'] if c in df_nba_ml.columns]
+    df_nba_ml = df_nba_ml.drop(columns=cols_to_drop_nba)
     all_results['nba'] = train_sport('nba', df_nba_ml, 'homeWin', split_idx_nba)
     
     # ---- MLB ----
     print("\nCargando dataset de MLB...")
     df_mlb_ml = load_dataset("MLB_featured.csv")
-    df_mlb_ml = df_mlb_ml.dropna(subset=['team1_wins', 'date'])
-    df_mlb_ml, split_idx_mlb = get_chronological_split(df_mlb_ml, 'date')
+    date_col_mlb = 'date' if 'date' in df_mlb_ml.columns else None
+    
+    subset_drop_mlb = ['team1_wins']
+    if date_col_mlb:
+        subset_drop_mlb.append(date_col_mlb)
+    df_mlb_ml = df_mlb_ml.dropna(subset=subset_drop_mlb)
+    
+    df_mlb_ml, split_idx_mlb = get_chronological_split(df_mlb_ml, date_col_mlb)
     print(f"Registros totales pasados: {len(df_mlb_ml)}")
-    df_mlb_ml = df_mlb_ml.drop(columns=['date', 'team1', 'team2', 'pitcher1', 'pitcher2'])
+    
+    cols_to_drop_mlb = [c for c in ['date', 'team1', 'team2', 'pitcher1', 'pitcher2'] if c in df_mlb_ml.columns]
+    df_mlb_ml = df_mlb_ml.drop(columns=cols_to_drop_mlb)
     all_results['mlb'] = train_sport('mlb', df_mlb_ml, 'team1_wins', split_idx_mlb)
     
     # Guardar resultados en JSON para la UI

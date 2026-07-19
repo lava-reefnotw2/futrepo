@@ -14,6 +14,13 @@ from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Input, Dense, Dropout, LayerNormalization, MultiHeadAttention, Flatten, Reshape
 from scipy import stats
 
+try:
+    from catboost import CatBoostClassifier
+    HAS_CATBOOST = True
+except ImportError:
+    HAS_CATBOOST = False
+
+
 def prepare_data(df: pd.DataFrame, target_col: str):
     """
     Realiza limpieza básica y preprocesamiento del dataset.
@@ -84,6 +91,14 @@ class SportsModelTrainer:
                 tree_method='hist'
             ),
         }
+        if HAS_CATBOOST:
+            self.models['cb'] = CatBoostClassifier(
+                random_state=self.random_state,
+                verbose=0,
+                task_type='CPU'
+            )
+
+
         self.best_estimators = {}
         self.cv_scores = {}
         self.training_times = {}
@@ -154,6 +169,32 @@ class SportsModelTrainer:
         self.training_times['xgb'] = time.time() - start_time
         print(f"  Mejor: {grid_xgb.best_params_}")
         
+        if HAS_CATBOOST:
+            print(f"Entrenando CatBoost (CV={cv_folds})...")
+            start_time = time.time()
+            
+            # Test if GPU is available for CatBoost
+            try:
+                test_cb = CatBoostClassifier(iterations=1, task_type='GPU', verbose=0)
+                test_cb.fit(np.random.rand(10, 2), np.array([0, 1] * 5))
+                self.models['cb'].set_params(task_type='GPU')
+                print("  (Aceleración por GPU activada para CatBoost)")
+            except Exception:
+                print("  (GPU no disponible para CatBoost, usando CPU)")
+
+            param_grid_cb = {
+                'iterations': [100, 200, 300],
+                'learning_rate': [0.01, 0.05, 0.1],
+                'depth': [4, 6, 8]
+            }
+            grid_cb = RandomizedSearchCV(self.models['cb'], param_grid_cb, n_iter=10, cv=cv_folds, scoring='accuracy', n_jobs=-1, random_state=self.random_state)
+            grid_cb.fit(X_train, y_train)
+            self.best_estimators['cb'] = grid_cb.best_estimator_
+            self.cv_scores['cb'] = self._extract_cv_scores(grid_cb, cv_folds)
+            self.training_times['cb'] = time.time() - start_time
+            print(f"  Mejor: {grid_cb.best_params_}")
+
+        
     def train_hybrid_models(self, X_train, y_train, input_dim: int, num_classes: int=2, cv_folds=5):
         """Entrena modelos híbridos"""
         print(f"Entrenando Stacking Classifier (CV={cv_folds})...")
@@ -162,6 +203,9 @@ class SportsModelTrainer:
             ('rf', self.best_estimators['rf']),
             ('xgb', self.best_estimators['xgb'])
         ]
+        if HAS_CATBOOST:
+            estimators.append(('cb', self.best_estimators['cb']))
+
         
         # Reducir cv a 3 para acelerar el Stacking final
         stacking_clf = StackingClassifier(

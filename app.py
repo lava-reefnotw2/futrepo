@@ -109,6 +109,194 @@ if 'favorite_teams' not in st.session_state:
 if 'selected_competitions' not in st.session_state:
     st.session_state.selected_competitions = []
 
+if 'theme' not in st.session_state:
+    st.session_state.theme = "light"
+
+if 'lang' not in st.session_state:
+    st.session_state.lang = "es"
+
+# Función traductora
+def t(es: str, en: str, pt: str) -> str:
+    lang = st.session_state.get('lang', 'es')
+    if lang == 'en':
+        return en
+    elif lang == 'pt':
+        return pt
+    return es
+
+# Estilos CSS para el control flotante y modo oscuro dinámico
+# Definir e inyectar estilos CSS para el control flotante y modo oscuro dinámico
+def inject_theme_css():
+    st.markdown("""
+        <style>
+        .st-key-floating_header {
+            position: fixed !important;
+            top: 12px !important;
+            right: 65px !important;
+            z-index: 999999 !important;
+            background: """ + ("rgba(30, 41, 59, 0.9)" if st.session_state.theme == "dark" else "rgba(255, 255, 255, 0.9)") + """ !important;
+            backdrop-filter: blur(8px) !important;
+            padding: 5px 10px !important;
+            border-radius: 12px !important;
+            box-shadow: """ + ("0 4px 15px rgba(0, 0, 0, 0.4)" if st.session_state.theme == "dark" else "0 4px 15px rgba(0, 0, 0, 0.08)") + """ !important;
+            border: 1px solid """ + ("rgba(255, 255, 255, 0.1)" if st.session_state.theme == "dark" else "rgba(0, 0, 0, 0.08)") + """ !important;
+            width: auto !important;
+        }
+        .st-key-floating_header div[data-testid="stHorizontalBlock"] {
+            display: flex !important;
+            flex-direction: row !important;
+            align-items: center !important;
+            gap: 6px !important;
+        }
+        .st-key-floating_header div[data-testid="column"] {
+            width: auto !important;
+            flex: none !important;
+            min-width: 0 !important;
+        }
+        </style>
+    """, unsafe_allow_html=True)
+
+    if st.session_state.theme == "dark":
+        st.markdown("""
+            <style>
+            .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"], section[data-testid="stMain"] {
+                background-color: #0f172a !important;
+                color: #f8fafc !important;
+            }
+            
+            /* Sidebar Dark Theme CSS Override */
+            [data-testid="stSidebar"] {
+                background-color: #0b0f19 !important;
+                border-right: 1px solid #1e293b !important;
+            }
+            [data-testid="stSidebar"] div, [data-testid="stSidebar"] section {
+                background-color: transparent !important;
+            }
+            [data-testid="stSidebar"] * {
+                color: #f8fafc !important;
+            }
+            [data-testid="stSidebar"] button {
+                background-color: #1e293b !important;
+                color: #f8fafc !important;
+                border: 1px solid #334155 !important;
+            }
+            [data-testid="stSidebar"] button:hover {
+                background-color: #334155 !important;
+                color: #ffffff !important;
+            }
+            
+            .stTextInput input, .stSelectbox select, div[role="combobox"], select, input {
+                background-color: #1e293b !important;
+                color: #f8fafc !important;
+                border: 1px solid #334155 !important;
+                border-radius: 8px !important;
+            }
+            div[data-testid="stForm"] {
+                background-color: #1e293b !important;
+                border: 1px solid #334155 !important;
+                border-radius: 12px !important;
+                padding: 2rem !important;
+            }
+            .stTextInput input:focus, .stSelectbox select:focus {
+                border-color: #6366f1 !important;
+                box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2) !important;
+            }
+            h1, h2, h3, h4, h5, h6, p, span, li, label, .stMarkdown, .stText, [data-testid="stMetricLabel"], [data-testid="stMetricValue"] {
+                color: #f8fafc !important;
+            }
+            div[data-testid="stExpander"] {
+                background-color: #1e293b !important;
+                border: 1px solid #334155 !important;
+                border-radius: 8px !important;
+            }
+            .dataframe {
+                background-color: #1e293b !important;
+                color: #f8fafc !important;
+            }
+            .metric-card {
+                background: linear-gradient(135deg, #4338ca 0%, #6d28d9 100%) !important;
+            }
+            .prediction-card {
+                background: linear-gradient(135deg, #be185d 0%, #be123c 100%) !important;
+            }
+            .premium-badge {
+                background: linear-gradient(135deg, #b45309 0%, #1e3a8a 100%) !important;
+            }
+            button[data-testid="stBaseButton-secondary"] {
+                background-color: #334155 !important;
+                color: #f8fafc !important;
+                border: 1px solid #475569 !important;
+            }
+            button[data-testid="stBaseButton-secondary"]:hover {
+                background-color: #475569 !important;
+                color: #ffffff !important;
+            }
+            button[data-baseweb="tab"] {
+                color: #94a3b8 !important;
+            }
+            button[data-baseweb="tab"][aria-selected="true"] {
+                color: #f8fafc !important;
+                border-bottom-color: #6366f1 !important;
+            }
+            </style>
+        """, unsafe_allow_html=True)
+    else:
+        st.markdown("""
+            <style>
+            .stApp, [data-testid="stAppViewContainer"], [data-testid="stMain"], section[data-testid="stMain"] {
+                background-color: #ffffff !important;
+                color: #1e293b !important;
+            }
+            
+            /* Sidebar Light Theme CSS Override */
+            [data-testid="stSidebar"] {
+                background-color: #f8fafc !important;
+                border-right: 1px solid #e2e8f0 !important;
+            }
+            [data-testid="stSidebar"] div, [data-testid="stSidebar"] section {
+                background-color: transparent !important;
+            }
+            [data-testid="stSidebar"] * {
+                color: #1e293b !important;
+            }
+            [data-testid="stSidebar"] button {
+                background-color: #ffffff !important;
+                color: #1e293b !important;
+                border: 1px solid #e2e8f0 !important;
+            }
+            
+            div[data-testid="stForm"] {
+                background-color: #ffffff !important;
+                border: 1px solid #e2e8f0 !important;
+                box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05) !important;
+            }
+            </style>
+        """, unsafe_allow_html=True)
+
+# Correr de manera inicial para la pantalla de login
+inject_theme_css()
+
+# Renderizado del Control Flotante (Idioma y Tema)
+with st.container(key="floating_header"):
+    col_lang, col_theme = st.columns([1, 1])
+    with col_lang:
+        selected_lang = st.selectbox(
+            label="Language Select",
+            options=["es", "en", "pt"],
+            format_func=lambda x: "🇪🇸 ES" if x == "es" else "🇺🇸 EN" if x == "en" else "🇧🇷 PT",
+            index=["es", "en", "pt"].index(st.session_state.lang),
+            key="lang_select_widget",
+            label_visibility="collapsed"
+        )
+        if selected_lang != st.session_state.lang:
+            st.session_state.lang = selected_lang
+            st.rerun()
+    with col_theme:
+        theme_icon = "🌙" if st.session_state.theme == "light" else "☀️"
+        if st.button(theme_icon, key="theme_toggle_widget", help="Toggle Light/Dark Theme"):
+            st.session_state.theme = "dark" if st.session_state.theme == "light" else "light"
+            st.rerun()
+
 # ============================================================================
 # CLASES Y UTILIDADES
 # ============================================================================
@@ -1749,13 +1937,16 @@ def check_login():
     with col2:
         st.title("🔐 SportsPredict Pro")
         
-        tab1, tab2 = st.tabs(["Iniciar Sesión", "Registrarse"])
+        tab1, tab2 = st.tabs([
+            t("Iniciar Sesión", "Log In", "Iniciar Sessão"),
+            t("Registrarse", "Register", "Cadastrar-se")
+        ])
         
         with tab1:
             with st.form("login_form"):
-                username = st.text_input("Usuario")
-                password = st.text_input("Contraseña", type="password")
-                submit_login = st.form_submit_button("Ingresar")
+                username = st.text_input(t("Usuario", "Username", "Usuário"))
+                password = st.text_input(t("Contraseña", "Password", "Senha"), type="password")
+                submit_login = st.form_submit_button(t("Ingresar", "Log In", "Entrar"))
                 
                 if submit_login:
                     user = authenticate_user(username, password)
@@ -1764,24 +1955,24 @@ def check_login():
                         st.session_state.user_id = user.id
                         st.session_state.user_tier = user.plan
                         st.session_state.user_role = getattr(user, "role", "USER")
-                        st.success(f"Bienvenido de nuevo, {username}!")
+                        st.success(t(f"¡Bienvenido de nuevo, {username}!", f"Welcome back, {username}!", f"Bem-vindo de volta, {username}!"))
                         st.rerun()
                     else:
-                        st.error("Credenciales inválidas")
+                        st.error(t("Credenciales inválidas", "Invalid credentials", "Credenciais inválidas"))
 
         with tab2:
             with st.form("register_form"):
-                new_username = st.text_input("Nuevo Usuario")
-                new_password = st.text_input("Contraseña", type="password")
-                plan_choice = st.selectbox("Plan Inicial", ["free", "pro", "elite"])
-                submit_register = st.form_submit_button("Registrarse")
+                new_username = st.text_input(t("Nuevo Usuario", "New Username", "Novo Usuário"))
+                new_password = st.text_input(t("Contraseña", "Password", "Senha"), type="password")
+                plan_choice = st.selectbox(t("Plan Inicial", "Initial Plan", "Plano Inicial"), ["free", "pro", "elite"])
+                submit_register = st.form_submit_button(t("Registrarse", "Register", "Cadastrar-se"))
                 
                 if submit_register:
                     try:
                         new_user = create_user(new_username, new_password, plan_choice, "USER")
-                        st.success("Usuario creado exitosamente. Por favor, inicia sesión.")
+                        st.success(t("Usuario creado exitosamente. Por favor, inicia sesión.", "User created successfully. Please log in.", "Usuário criado com sucesso. Por favor, faça o login."))
                     except Exception as e:
-                        st.error(f"Error creando usuario (puede que ya exista): {e}")
+                        st.error(t(f"Error creando usuario (puede que ya exista): {e}", f"Error creating user (it might already exist): {e}", f"Erro ao criar usuário (pode ser que já exista): {e}"))
 
     return False
 
@@ -1803,11 +1994,15 @@ def logout():
     st.rerun()
 
 def set_sidebar_visibility(visible: bool):
-    """Muestra u oculta el sidebar nativo de Streamlit."""
+    """Muestra u oculta el sidebar nativo de Streamlit y configura sus colores según el tema."""
     display = "block" if visible else "none"
     visibility = "visible" if visible else "hidden"
     width = "21rem" if visible else "0rem"
     margin_left = "0" if not visible else ""
+
+    theme = st.session_state.get('theme', 'light')
+    sidebar_bg = "#0b0f19" if theme == "dark" else "#f8fafc"
+    sidebar_fg = "#f8fafc" if theme == "dark" else "#1e293b"
 
     components.html(
         f"""
@@ -1828,6 +2023,25 @@ def set_sidebar_visibility(visible: bool):
             sidebar.style.minWidth = '{width}';
             sidebar.style.maxWidth = '{width}';
             sidebar.style.width = '{width}';
+            
+            // Forzar color de fondo del sidebar principal
+            sidebar.style.setProperty('background-color', '{sidebar_bg}', 'important');
+            
+            // Hacer transparentes todos los contenedores descendientes (excepto botones e inputs)
+            // para que no tapen el color de fondo principal.
+            const descendants = sidebar.querySelectorAll('*');
+            descendants.forEach(el => {{
+                const tag = el.tagName.toLowerCase();
+                if (tag !== 'button' && tag !== 'input' && tag !== 'select' && tag !== 'textarea' && !el.classList.contains('stButton')) {{
+                    el.style.setProperty('background-color', 'transparent', 'important');
+                }}
+            }});
+            
+            // Forzar color de texto de todos los elementos dentro del sidebar
+            const textElements = sidebar.querySelectorAll('span, p, h1, h2, h3, h4, h5, h6, li, label, a');
+            textElements.forEach(el => {{
+                el.style.setProperty('color', '{sidebar_fg}', 'important');
+            }});
         }}
 
         if (openBtn) {{
@@ -1951,6 +2165,8 @@ def main():
     if not check_login():
         return
 
+    # Inyectar estilos en cada corrida de página para evitar que st.navigation limpie el DOM del CSS
+    inject_theme_css()
     set_sidebar_visibility(True)
 
     # Sidebar
@@ -1960,24 +2176,24 @@ def main():
 
         # Información del usuario
         user_id = st.session_state.user_id or ""
-        st.write(f"**Usuario ID:** `{user_id[:12]}...`")
-        st.write(f"**Plan:** `{st.session_state.user_tier.upper()}`")
-        st.write(f"**Rol:** `{st.session_state.user_role.upper()}`")
-        if st.button("🚪 Cerrar Sesión", use_container_width=True, type="secondary"):
+        st.write(t(f"**Usuario ID:** `{user_id[:12]}...`", f"**User ID:** `{user_id[:12]}...`", f"**ID do Usuário:** `{user_id[:12]}...`"))
+        st.write(t(f"**Plan:** `{st.session_state.user_tier.upper()}`", f"**Plan:** `{st.session_state.user_tier.upper()}`", f"**Plano:** `{st.session_state.user_tier.upper()}`"))
+        st.write(t(f"**Rol:** `{st.session_state.user_role.upper()}`", f"**Role:** `{st.session_state.user_role.upper()}`", f"**Função:** `{st.session_state.user_role.upper()}`"))
+        if st.button(t("🚪 Cerrar Sesión", "🚪 Log Out", "🚪 Sair"), use_container_width=True, type="secondary"):
             logout()
         st.divider()
 
     # Menú de navegación moderno
     pages = {
-        "Navegación Principal": [
-            st.Page(page_dashboard, title="Dashboard", icon="🏠"),
-            st.Page(page_create_prediction, title="Crear Predicción", icon="➕"),
-            st.Page(page_my_predictions, title="Mis Predicciones", icon="📊"),
-            st.Page(page_ai_predictions, title="Predicciones IA", icon="🤖"),
-            st.Page(page_competitions, title="Competencias", icon="🏆"),
-            st.Page(page_statistics, title="Estadísticas", icon="📈"),
-            st.Page(page_alerts, title="Alertas", icon="🔔"),
-            st.Page(page_premium, title="Premium", icon="💎")
+        t("Navegación Principal", "Main Navigation", "Navegação Principal"): [
+            st.Page(page_dashboard, title=t("Dashboard", "Dashboard", "Dashboard"), icon="🏠"),
+            st.Page(page_create_prediction, title=t("Crear Predicción", "Create Prediction", "Criar Previsão"), icon="➕"),
+            st.Page(page_my_predictions, title=t("Mis Predicciones", "My Predictions", "Minhas Previsões"), icon="📊"),
+            st.Page(page_ai_predictions, title=t("Predicciones IA", "AI Predictions", "Previsões IA"), icon="🤖"),
+            st.Page(page_competitions, title=t("Competencias", "Competitions", "Competições"), icon="🏆"),
+            st.Page(page_statistics, title=t("Estadísticas", "Statistics", "Estatísticas"), icon="📈"),
+            st.Page(page_alerts, title=t("Alertas", "Alerts", "Alertas"), icon="🔔"),
+            st.Page(page_premium, title=t("Premium", "Premium", "Premium"), icon="💎")
         ]
     }
 
@@ -1986,15 +2202,12 @@ def main():
     # Información adicional y botón de cerrar sesión al final del sidebar
     with st.sidebar:
         st.divider()
-        st.write("### 📱 Información")
-        st.info("""
-        **SportsPredict Pro v1.0**
-
-        Plataforma de predicciones deportivas con IA
-
-        🔗 [Sitio Web](https://example.com)
-        📧 [Contacto](mailto:info@example.com)
-        """)
+        st.write(t("### 📱 Información", "### 📱 Information", "### 📱 Informações"))
+        st.info(t(
+            "**SportsPredict Pro v1.0**\n\nPlataforma de predicciones deportivas con IA\n\n🔗 [Sitio Web](https://example.com)\n📧 [Contacto](mailto:info@example.com)",
+            "**SportsPredict Pro v1.0**\n\nAI sports prediction platform\n\n🔗 [Website](https://example.com)\n📧 [Contact](mailto:info@example.com)",
+            "**SportsPredict Pro v1.0**\n\nPlataforma de previsões esportivas com IA\n\n🔗 [Sítio Web](https://example.com)\n📧 [Contato](mailto:info@example.com)"
+        ))
 
     # Renderizar página seleccionada nativamente
     pg.run()

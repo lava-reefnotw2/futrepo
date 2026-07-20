@@ -1021,7 +1021,7 @@ def generate_predictions_report_pdf(predictions: List[Dict]) -> bytes:
     timestamp = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
     pdf.cell(0, 10, f"Generado: {timestamp}", align="R")
 
-    return pdf.output()
+    return bytes(pdf.output())
 
 
 def generate_predictions_report_excel(predictions: List[Dict]) -> bytes:

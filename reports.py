@@ -102,7 +102,7 @@ class PDFReportGenerator:
 
     def output_bytes(self) -> bytes:
         """Retorna el PDF como bytes"""
-        return self.pdf.output()
+        return bytes(self.pdf.output())
 
 
 def generate_consolidated_report(json_path: str = 'model_results.json') -> bytes:

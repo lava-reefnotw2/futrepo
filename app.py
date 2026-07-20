@@ -996,7 +996,7 @@ def generate_predictions_report_pdf(predictions: List[Dict]) -> bytes:
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Arial", "B", 16)
-    pdf.cell(0, 15, "📊 REPORTE DE PREDICCIONES", ln=True, align="C")
+    pdf.cell(0, 15, "REPORTE DE PREDICCIONES", ln=True, align="C")
 
     pdf.set_font("Arial", "", 11)
     pdf.ln(5)

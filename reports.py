@@ -315,10 +315,10 @@ def generate_predictions_report(predictions: List[Dict], report_type: str = 'pdf
 
     if report_type == 'pdf':
         pdf = PDFReportGenerator()
-        pdf.add_title("📊 REPORTE DE PREDICCIONES", "Análisis Detallado")
+        pdf.add_title("REPORTE DE PREDICCIONES", "Análisis Detallado")
 
         # Métricas principales
-        pdf.add_section_title("📈 Métricas Principales")
+        pdf.add_section_title("Métricas Principales")
         total_preds = len(df)
         correct_preds = len(df[df['prediction_status'] == 'won']) if 'prediction_status' in df.columns else 0
         accuracy = (correct_preds / total_preds * 100) if total_preds > 0 else 0
@@ -330,7 +330,7 @@ def generate_predictions_report(predictions: List[Dict], report_type: str = 'pdf
         pdf.add_metric("Confianza Promedio", f"{avg_confidence:.2f}")
 
         # Tabla de predicciones
-        pdf.add_section_title("📋 Historial de Predicciones")
+        pdf.add_section_title("Historial de Predicciones")
         if not df.empty:
             data = []
             cols_to_show = ['match_id', 'predicted_home_score', 'predicted_away_score', 'confidence_level']
@@ -342,7 +342,7 @@ def generate_predictions_report(predictions: List[Dict], report_type: str = 'pdf
             pdf.add_table(data, cols_available, [40, 30, 30, 30])
 
         # Análisis
-        pdf.add_section_title("📊 Análisis")
+        pdf.add_section_title("Análisis")
         pdf.add_text(
             f"Sobre un total de {total_preds} predicciones realizadas, se han acertado {correct_preds} "
             f"({accuracy:.1f}%). El nivel de confianza promedio es de {avg_confidence:.2f}. "
@@ -354,9 +354,9 @@ def generate_predictions_report(predictions: List[Dict], report_type: str = 'pdf
 
     elif report_type == 'word':
         word = WordReportGenerator()
-        word.add_title("📊 REPORTE DE PREDICCIONES", "Análisis Detallado")
+        word.add_title("REPORTE DE PREDICCIONES", "Análisis Detallado")
 
-        word.add_section_title("📈 Métricas Principales")
+        word.add_section_title("Métricas Principales")
         total_preds = len(df)
         correct_preds = len(df[df['prediction_status'] == 'won']) if 'prediction_status' in df.columns else 0
         accuracy = (correct_preds / total_preds * 100) if total_preds > 0 else 0
@@ -367,7 +367,7 @@ def generate_predictions_report(predictions: List[Dict], report_type: str = 'pdf
         word.add_metric("Tasa de Precisión", f"{accuracy:.2f}", "%")
         word.add_metric("Confianza Promedio", f"{avg_confidence:.2f}")
 
-        word.add_section_title("📋 Historial de Predicciones")
+        word.add_section_title("Historial de Predicciones")
         if not df.empty:
             data = []
             cols_to_show = ['match_id', 'predicted_home_score', 'predicted_away_score', 'confidence_level']
@@ -378,7 +378,7 @@ def generate_predictions_report(predictions: List[Dict], report_type: str = 'pdf
 
             word.add_table(data, cols_available)
 
-        word.add_section_title("📊 Análisis")
+        word.add_section_title("Análisis")
         word.add_text(
             f"Sobre un total de {total_preds} predicciones realizadas, se han acertado {correct_preds} "
             f"({accuracy:.1f}%). El nivel de confianza promedio es de {avg_confidence:.2f}. "
@@ -421,10 +421,10 @@ def generate_statistics_report(user_stats: Dict, predictions: List[Dict], report
 
     if report_type == 'pdf':
         pdf = PDFReportGenerator()
-        pdf.add_title("📊 REPORTE DE ESTADÍSTICAS DESCRIPTIVAS", "Análisis Completo del Desempeño")
+        pdf.add_title("REPORTE DE ESTADÍSTICAS DESCRIPTIVAS", "Análisis Completo del Desempeño")
 
         # Resumen Ejecutivo
-        pdf.add_section_title("🎯 Resumen Ejecutivo")
+        pdf.add_section_title("Resumen Ejecutivo")
         pdf.add_metric("Total de Predicciones", str(user_stats.get('total_predictions', 0)))
         pdf.add_metric("Predicciones Correctas", str(user_stats.get('correct_predictions', 0)))
         pdf.add_metric("Tasa de Precisión", f"{user_stats.get('accuracy_rate', 0):.2f}", "%")
@@ -432,7 +432,7 @@ def generate_statistics_report(user_stats: Dict, predictions: List[Dict], report
         pdf.add_metric("Ranking Global", str(user_stats.get('rank', 'N/A')))
 
         # Estadísticas Descriptivas
-        pdf.add_section_title("📊 Estadísticas Descriptivas")
+        pdf.add_section_title("Estadísticas Descriptivas")
 
         if not df_preds.empty and 'confidence_level' in df_preds.columns:
             confidence_values = df_preds['confidence_level'].dropna()
@@ -443,7 +443,7 @@ def generate_statistics_report(user_stats: Dict, predictions: List[Dict], report
             pdf.add_metric("Mediana", f"{confidence_values.median():.2f}")
 
         # Análisis de Rendimiento
-        pdf.add_section_title("📈 Análisis de Rendimiento")
+        pdf.add_section_title("Análisis de Rendimiento")
 
         if user_stats.get('accuracy_rate', 0) > 70:
             performance_text = "EXCELENTE: Tu precisión es superior al 70%. Continúa con tu estrategia actual."
@@ -455,7 +455,7 @@ def generate_statistics_report(user_stats: Dict, predictions: List[Dict], report
         pdf.add_text(performance_text)
 
         # Recomendaciones
-        pdf.add_section_title("💡 Recomendaciones")
+        pdf.add_section_title("Recomendaciones")
         recommendations = [
             "• Analiza tus predicciones incorrectas para identificar patrones",
             "• Incrementa confianza solo cuando tengas datos sólidos",
@@ -470,16 +470,16 @@ def generate_statistics_report(user_stats: Dict, predictions: List[Dict], report
 
     elif report_type == 'word':
         word = WordReportGenerator()
-        word.add_title("📊 REPORTE DE ESTADÍSTICAS DESCRIPTIVAS", "Análisis Completo del Desempeño")
+        word.add_title("REPORTE DE ESTADÍSTICAS DESCRIPTIVAS", "Análisis Completo del Desempeño")
 
-        word.add_section_title("🎯 Resumen Ejecutivo")
+        word.add_section_title("Resumen Ejecutivo")
         word.add_metric("Total de Predicciones", str(user_stats.get('total_predictions', 0)))
         word.add_metric("Predicciones Correctas", str(user_stats.get('correct_predictions', 0)))
         word.add_metric("Tasa de Precisión", f"{user_stats.get('accuracy_rate', 0):.2f}", "%")
         word.add_metric("Confianza Promedio", f"{user_stats.get('avg_confidence', 0):.2f}")
         word.add_metric("Ranking Global", str(user_stats.get('rank', 'N/A')))
 
-        word.add_section_title("📊 Estadísticas Descriptivas")
+        word.add_section_title("Estadísticas Descriptivas")
         if not df_preds.empty and 'confidence_level' in df_preds.columns:
             confidence_values = df_preds['confidence_level'].dropna()
             word.add_metric("Confianza Máxima", f"{confidence_values.max():.2f}")
@@ -487,7 +487,7 @@ def generate_statistics_report(user_stats: Dict, predictions: List[Dict], report
             word.add_metric("Desviación Estándar", f"{confidence_values.std():.2f}")
             word.add_metric("Mediana", f"{confidence_values.median():.2f}")
 
-        word.add_section_title("📈 Análisis de Rendimiento")
+        word.add_section_title("Análisis de Rendimiento")
         if user_stats.get('accuracy_rate', 0) > 70:
             performance_text = "EXCELENTE: Tu precisión es superior al 70%. Continúa con tu estrategia actual."
         elif user_stats.get('accuracy_rate', 0) > 55:
@@ -496,7 +496,7 @@ def generate_statistics_report(user_stats: Dict, predictions: List[Dict], report
             performance_text = "DESARROLLO: Tu precisión está por debajo del 55%. Revisa tu estrategia de análisis."
         word.add_text(performance_text)
 
-        word.add_section_title("💡 Recomendaciones")
+        word.add_section_title("Recomendaciones")
         recommendations = [
             "• Analiza tus predicciones incorrectas para identificar patrones",
             "• Incrementa confianza solo cuando tengas datos sólidos",
@@ -536,9 +536,9 @@ def generate_competitions_report(competitions: List[Dict], report_type: str = 'p
 
     if report_type == 'pdf':
         pdf = PDFReportGenerator()
-        pdf.add_title("🏆 REPORTE DE COMPETENCIAS", "Resumen de Torneos Activos")
+        pdf.add_title("REPORTE DE COMPETENCIAS", "Resumen de Torneos Activos")
 
-        pdf.add_section_title("📋 Competencias Activas")
+        pdf.add_section_title("Competencias Activas")
         pdf.add_metric("Total de Competencias", str(len(df)))
 
         if not df.empty:
@@ -557,8 +557,8 @@ def generate_competitions_report(competitions: List[Dict], report_type: str = 'p
 
     elif report_type == 'word':
         word = WordReportGenerator()
-        word.add_title("🏆 REPORTE DE COMPETENCIAS", "Resumen de Torneos Activos")
-        word.add_section_title("📋 Competencias Activas")
+        word.add_title("REPORTE DE COMPETENCIAS", "Resumen de Torneos Activos")
+        word.add_section_title("Competencias Activas")
         word.add_metric("Total de Competencias", str(len(df)))
 
         if not df.empty:
@@ -597,12 +597,12 @@ def generate_comprehensive_report(user_data: Dict, predictions: List[Dict],
 
     if report_type == 'pdf':
         pdf = PDFReportGenerator()
-        pdf.add_title("📊 REPORTE COMPRENSIVO", "Análisis Integral del Desempeño")
+        pdf.add_title("REPORTE COMPRENSIVO", "Análisis Integral del Desempeño")
         pdf.add_text(f"Generado para: {user_data.get('username', 'Usuario')}")
         pdf.add_text(f"Período: Últimos 30 días")
 
         # SECCIÓN 1: RESUMEN EJECUTIVO
-        pdf.add_section_title("🎯 RESUMEN EJECUTIVO")
+        pdf.add_section_title("RESUMEN EJECUTIVO")
 
         accuracy = user_data.get('accuracy_rate', 0)
         confidence = user_data.get('avg_confidence', 0)
@@ -618,7 +618,7 @@ Ranking Global: {user_data.get('rank', 'N/A')}
         pdf.add_text(summary_text)
 
         # SECCIÓN 2: ANÁLISIS DETALLADO
-        pdf.add_section_title("📊 ANÁLISIS DETALLADO")
+        pdf.add_section_title("ANÁLISIS DETALLADO")
 
         df_preds = pd.DataFrame(predictions) if predictions else pd.DataFrame()
 
@@ -639,11 +639,11 @@ Ranking Global: {user_data.get('rank', 'N/A')}
 
         # SECCIÓN 3: COMPETENCIAS
         if competitions:
-            pdf.add_section_title("🏆 COMPETENCIAS")
+            pdf.add_section_title("COMPETENCIAS")
             pdf.add_metric("Competencias Activas", str(len(competitions)))
 
         # SECCIÓN 4: RECOMENDACIONES
-        pdf.add_section_title("💡 RECOMENDACIONES PARA MEJORA")
+        pdf.add_section_title("RECOMENDACIONES PARA MEJORA")
 
         if accuracy > 70:
             recommendation = "Tu desempeño es excelente. Mantén tu estrategia actual."
@@ -659,11 +659,11 @@ Ranking Global: {user_data.get('rank', 'N/A')}
 
     elif report_type == 'word':
         word = WordReportGenerator()
-        word.add_title("📊 REPORTE COMPRENSIVO", "Análisis Integral del Desempeño")
+        word.add_title("REPORTE COMPRENSIVO", "Análisis Integral del Desempeño")
         word.add_text(f"Generado para: {user_data.get('username', 'Usuario')}")
         word.add_text(f"Período: Últimos 30 días")
 
-        word.add_section_title("🎯 RESUMEN EJECUTIVO")
+        word.add_section_title("RESUMEN EJECUTIVO")
         accuracy = user_data.get('accuracy_rate', 0)
         confidence = user_data.get('avg_confidence', 0)
         summary_text = f"Total de Predicciones: {user_data.get('total_predictions', 0)}\n" \
@@ -673,7 +673,7 @@ Ranking Global: {user_data.get('rank', 'N/A')}
                        f"Ranking Global: {user_data.get('rank', 'N/A')}"
         word.add_text(summary_text)
 
-        word.add_section_title("📊 ANÁLISIS DETALLADO")
+        word.add_section_title("ANÁLISIS DETALLADO")
         df_preds = pd.DataFrame(predictions) if predictions else pd.DataFrame()
         if not df_preds.empty:
             word.add_text(f"Total de registros analizados: {len(df_preds)}")
@@ -688,10 +688,10 @@ Ranking Global: {user_data.get('rank', 'N/A')}
                 word.add_table(data, ["Match ID", "Predicción", "Confianza"])
 
         if competitions:
-            word.add_section_title("🏆 COMPETENCIAS")
+            word.add_section_title("COMPETENCIAS")
             word.add_metric("Competencias Activas", str(len(competitions)))
 
-        word.add_section_title("💡 RECOMENDACIONES PARA MEJORA")
+        word.add_section_title("RECOMENDACIONES PARA MEJORA")
         if accuracy > 70:
             recommendation = "Tu desempeño es excelente. Mantén tu estrategia actual."
         elif accuracy > 55:

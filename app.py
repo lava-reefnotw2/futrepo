@@ -1898,25 +1898,25 @@ def page_statistics():
 
         with col1:
             st.write(t("**Reporte en PDF**", "**PDF Report**", "**Relatório em PDF**"))
-            if st.button(t("📄 Descargar PDF", "📄 Download PDF", "📄 Baixar PDF"), key="btn_dld_pdf"):
-                pdf_bytes = generate_predictions_report_pdf(predictions)
-                st.download_button(
-                    label=t("Descargar PDF", "Download PDF", "Baixar PDF"),
-                    data=pdf_bytes,
-                    file_name=f"predicciones_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
-                    mime="application/pdf"
-                )
+            pdf_bytes = generate_predictions_report_pdf(predictions)
+            st.download_button(
+                label=t("📄 Descargar PDF", "📄 Download PDF", "📄 Baixar PDF"),
+                data=pdf_bytes,
+                file_name=f"predicciones_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
+                mime="application/pdf",
+                key="btn_dld_pdf"
+            )
 
         with col2:
             st.write(t("**Reporte en Excel**", "**Excel Report**", "**Relatório em Excel**"))
-            if st.button(t("📊 Descargar Excel", "📊 Download Excel", "📊 Baixar Excel"), key="btn_dld_excel"):
-                excel_bytes = generate_predictions_report_excel(predictions)
-                st.download_button(
-                    label=t("Descargar Excel", "Download Excel", "Baixar Excel"),
-                    data=excel_bytes,
-                    file_name=f"predicciones_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx",
-                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                )
+            excel_bytes = generate_predictions_report_excel(predictions)
+            st.download_button(
+                label=t("📊 Descargar Excel", "📊 Download Excel", "📊 Baixar Excel"),
+                data=excel_bytes,
+                file_name=f"predicciones_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                key="btn_dld_excel"
+            )
 
     # ============ TAB 5: INSIGHTS ============
     with tab5:

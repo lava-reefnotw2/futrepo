@@ -24,7 +24,7 @@ from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils.dataframe import dataframe_to_rows
 
-from db import init_db, get_teams_by_sport, get_pitchers, save_future_match, get_future_matches
+from db import init_db, get_teams_by_sport, get_pitchers, save_future_match
 from predict import predict_football, predict_nba, predict_mlb
 # ============================================================================
 # CONFIGURACIÓN DE LA PÁGINA
@@ -1253,55 +1253,41 @@ def page_dashboard():
 
     st.divider()
 
-    # Próximos partidos creados por el usuario
-    st.subheader(t("📋 Próximos Partidos Guardados", "📋 Upcoming Saved Matches", "📋 Próximos Jogos Salvos"))
-    st.markdown(t("Partidos analizados y listos para tu predicción personal.", "Matches analyzed and ready for your personal prediction.", "Jogos analisados e prontos para sua previsão pessoal."))
+    # Predicciones recientes desde la base de datos Neon (PostgreSQL)
+    st.subheader(t("📋 Mis Predicciones Recientes (Cloud)", "📋 My Recent Predictions (Cloud)", "📋 Minhas Previsões Recentes (Cloud)"))
+    st.markdown(t("Tus últimas predicciones guardadas y sincronizadas en la nube.", "Your latest predictions saved and synchronized in the cloud.", "Suas últimas previsões salvas e sincronizadas na nuvem."))
 
-    with st.spinner(t("Cargando partidos desde la base de datos...", "Loading matches from the database...", "Carregando jogos do banco de dados...")):
-        matches = get_future_matches()
+    with st.spinner(t("Cargando predicciones desde Neon...", "Loading predictions from Neon...", "Carregando previsões do Neon...")):
+        recent_preds = get_user_predictions(st.session_state.user_id, limit=5)
 
-    if matches:
-        for i, match in enumerate(matches):
-            with st.expander(f"[{match['deporte']}] 👥 {match['local']} vs {match['visitante']} - {match['fecha']}"):
+    if recent_preds:
+        for i, pred in enumerate(recent_preds):
+            try:
+                # Intentar parsear la fecha de creación
+                date_obj = datetime.fromisoformat(pred['created_at'].replace('Z', '+00:00'))
+                date_str = date_obj.strftime("%d/%m/%Y %H:%M")
+            except Exception:
+                date_str = pred['created_at']
+
+            is_manual_str = t("Manual", "Manual", "Manual") if pred['is_manual'] else t("Automática (IA)", "Automatic (AI)", "Automática (IA)")
+            badge_color = "#3b82f6" if pred['is_manual'] else "#10b981"
+            
+            with st.expander(f"🔮 Partido ID: {pred['match_id']} — {date_str}"):
                 col1, col2, col3 = st.columns(3)
-
                 with col1:
-                    st.write(t("**Predicción de nuestra IA:**", "**Our AI Prediction:**", "**Previsão da nossa IA:**"))
-                    st.info(t(f"Ganador sugerido: **{match['prediccion_ia'].upper()}**", f"Suggested winner: **{match['prediccion_ia'].upper()}**", f"Vencedor sugerido: **{match['prediccion_ia'].upper()}**"))
-                    if match['deporte'] == 'Futbol':
-                        st.write(t(f"V: {match['prob_visitante']*100:.1f}% | E: {match['prob_empate']*100:.1f}% | L: {match['prob_local']*100:.1f}%",
-                                   f"A: {match['prob_visitante']*100:.1f}% | D: {match['prob_empate']*100:.1f}% | H: {match['prob_local']*100:.1f}%",
-                                   f"V: {match['prob_visitante']*100:.1f}% | E: {match['prob_empate']*100:.1f}% | L: {match['prob_local']*100:.1f}%"))
-                    else:
-                        st.write(t(f"Visita: {match['prob_visitante']*100:.1f}% | Local: {match['prob_local']*100:.1f}%",
-                                   f"Away: {match['prob_visitante']*100:.1f}% | Home: {match['prob_local']*100:.1f}%",
-                                   f"Visita: {match['prob_visitante']*100:.1f}% | Local: {match['prob_local']*100:.1f}%"))
-
+                    st.markdown(t("**Resultado Predicho:**", "**Predicted Result:**", "**Resultado Previsto:**"))
+                    st.info(f"🏆 {pred['predicted_winner']}")
                 with col2:
-                    st.write(t("**Tu Predicción:**", "**Your Prediction:**", "**Sua Previsão:**"))
-                    opciones = [t('Local', 'Home', 'Local'), t('Empate', 'Draw', 'Empate'), t('Visitante', 'Away', 'Visitante')] if match['deporte'] == 'Futbol' else [t('Local', 'Home', 'Local'), t('Visitante', 'Away', 'Visitante')]
-                    tu_pred = st.selectbox(t("¿Quién crees que ganará?", "Who do you think will win?", "Quem você acha que vai ganhar?"), opciones, key=f"user_pred_{i}")
-
+                    st.markdown(t("**Nivel de Confianza:**", "**Confidence Level:**", "**Nível de Confiança:**"))
+                    st.metric(label=t("Confianza", "Confidence", "Confiança"), value=f"{pred['confidence_level']*100:.1f}%")
                 with col3:
-                    st.write(t("**Confianza:**", "**Confidence:**", "**Confiança:**"))
-                    confidence = st.slider(t("Nivel de confianza", "Confidence level", "Nível de confiança"), 0.0, 1.0, 0.5, step=0.1, key=f"conf_{i}")
-
-                    if st.button(t("🎯 Guardar mi predicción", "🎯 Save my prediction", "🎯 Salvar minha previsão"), key=f"btn_{i}"):
-                        try:
-                            prisma_save_prediction(
-                                user_id=st.session_state.user_id,
-                                match_id=match.get('id', 0),
-                                predicted_winner=tu_pred,
-                                confidence=confidence,
-                                is_manual=True,
-                                ai_data=json.dumps({"prediccion_ia": match.get('prediccion_ia')})
-                            )
-                            st.success(t("✅ Predicción guardada en tu perfil exitosamente", "✅ Prediction saved to your profile successfully", "✅ Previsão salva no seu perfil com sucesso"))
-                            st.balloons()
-                        except Exception as e:
-                            st.error(t(f"Error guardando predicción: {e}", f"Error saving prediction: {e}", f"Erro ao salvar previsão: {e}"))
+                    st.markdown(t("**Detalles del Registro:**", "**Record Details:**", "**Detalhes do Registro:**"))
+                    st.markdown(f"**Tipo:** <span style='color:{badge_color};font-weight:bold;'>{is_manual_str}</span>", unsafe_allow_html=True)
+                    st.markdown(t(f"**Fecha:** {date_str}", f"**Date:** {date_str}", f"**Data:** {date_str}"))
     else:
-        st.info(t("No hay partidos futuros guardados. Ve a 'Crear Predicción' para añadir uno.", "No upcoming saved matches. Go to 'Create Prediction' to add one.", "Não há jogos futuros salvos. Vá para 'Criar Previsão' para adicionar um."))
+        st.info(t("Aún no tienes predicciones registradas en la nube. Ve a 'Crear Predicción' o 'Predicciones IA' para generar una.",
+                  "You don't have any predictions registered in the cloud yet. Go to 'Create Prediction' or 'AI Predictions' to generate one.",
+                  "Você ainda não tem previsões registradas na nuvem. Vá para 'Criar Previsão' ou 'Previsões IA' para gerar uma."))
 
     st.divider()
 

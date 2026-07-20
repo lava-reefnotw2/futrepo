@@ -17,6 +17,12 @@ from openpyxl.utils.dataframe import dataframe_to_rows
 from docx import Document
 from docx.shared import Inches, Pt
 from docx.enum.text import WD_ALIGN_PARAGRAPH
+from PIL import Image
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+import seaborn as sns
+from scipy import stats
 
 # ============================================================================
 # GENERADOR DE REPORTES PDF
@@ -99,6 +105,19 @@ class PDFReportGenerator:
         self.pdf.set_text_color(150, 150, 150)
         timestamp = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
         self.pdf.cell(0, 10, f"Generado: {timestamp}", align="R")
+
+    def add_image(self, img_path_or_buf, w=150, h=0):
+        """Añade una imagen al reporte centrada"""
+        page_width = self.pdf.w
+        x = (page_width - w) / 2
+        
+        if isinstance(img_path_or_buf, io.BytesIO):
+            img = Image.open(img_path_or_buf)
+        else:
+            img = img_path_or_buf
+            
+        self.pdf.image(img, x=x, w=w, h=h)
+        self.pdf.ln(5)
 
     def output_bytes(self) -> bytes:
         """Retorna el PDF como bytes"""
@@ -405,6 +424,97 @@ def generate_predictions_report(predictions: List[Dict], report_type: str = 'pdf
         return excel.output_bytes()
 
 
+# Helper functions for generating matplotlib charts
+def _generate_distribution_chart(data: List[float]) -> io.BytesIO:
+    plt.figure(figsize=(6, 3))
+    sns.histplot(data, bins=15, kde=False, color='#667EEA', stat='count', alpha=0.7)
+    if len(data) > 1:
+        mu, sigma = np.mean(data), np.std(data)
+        if sigma > 0:
+            x = np.linspace(min(data), max(data), 100)
+            y = stats.norm.pdf(x, mu, sigma)
+            bin_width = (max(data) - min(data)) / 15
+            y_scaled = y * len(data) * bin_width
+            plt.plot(x, y_scaled, color='#E53E3E', linewidth=2, label='Curva Normal')
+    plt.title("Distribución de Confianza", fontsize=10, fontweight='bold', color='#262730')
+    plt.xlabel("Confianza", fontsize=8)
+    plt.ylabel("Frecuencia", fontsize=8)
+    plt.grid(True, linestyle='--', alpha=0.5)
+    plt.tight_layout()
+    
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png', bbox_inches='tight', dpi=150)
+    plt.close()
+    buf.seek(0)
+    return buf
+
+def _generate_cdf_chart(data: List[float]) -> io.BytesIO:
+    plt.figure(figsize=(6, 3))
+    sorted_data = np.sort(data)
+    cumulative = np.arange(1, len(sorted_data) + 1) / len(sorted_data)
+    plt.plot(sorted_data, cumulative, color='#764BA2', linewidth=2, label='CDF')
+    plt.title("Función de Distribución Acumulada (CDF)", fontsize=10, fontweight='bold', color='#262730')
+    plt.xlabel("Confianza", fontsize=8)
+    plt.ylabel("Probabilidad", fontsize=8)
+    plt.grid(True, linestyle='--', alpha=0.5)
+    plt.ylim(-0.05, 1.05)
+    plt.tight_layout()
+    
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png', bbox_inches='tight', dpi=150)
+    plt.close()
+    buf.seek(0)
+    return buf
+
+def _generate_time_series_chart(dates: List[datetime], values: List[float]) -> io.BytesIO:
+    plt.figure(figsize=(8, 3))
+    df = pd.DataFrame({'date': dates, 'value': values}).sort_values('date')
+    plt.plot(df['date'], df['value'], marker='o', color='#667EEA', linewidth=1.5, label='Confianza')
+    if len(df) > 7:
+        df['ma_7'] = df['value'].rolling(window=7).mean()
+        plt.plot(df['date'], df['ma_7'], color='#E53E3E', linestyle='--', linewidth=1.5, label='Media Móvil (7d)')
+    plt.title("Evolución de Confianza en el Tiempo", fontsize=10, fontweight='bold', color='#262730')
+    plt.xlabel("Fecha", fontsize=8)
+    plt.ylabel("Nivel de Confianza", fontsize=8)
+    plt.grid(True, linestyle='--', alpha=0.5)
+    if len(df) > 7:
+        plt.legend(fontsize=8)
+    plt.xticks(rotation=15)
+    plt.tight_layout()
+    
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png', bbox_inches='tight', dpi=150)
+    plt.close()
+    buf.seek(0)
+    return buf
+
+def _generate_status_chart(statuses: List[str]) -> io.BytesIO:
+    plt.figure(figsize=(6, 3))
+    df_status = pd.Series(statuses).value_counts()
+    
+    colors = []
+    for s in df_status.index:
+        if s == 'won':
+            colors.append('#48BB78')
+        elif s == 'lost':
+            colors.append('#E53E3E')
+        else:
+            colors.append('#A0AEC0')
+            
+    sns.barplot(x=df_status.index, y=df_status.values, hue=df_status.index, palette=colors, legend=False)
+    plt.title("Distribución por Status", fontsize=10, fontweight='bold', color='#262730')
+    plt.xlabel("Status", fontsize=8)
+    plt.ylabel("Cantidad", fontsize=8)
+    plt.grid(True, linestyle='--', alpha=0.5)
+    plt.tight_layout()
+    
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png', bbox_inches='tight', dpi=150)
+    plt.close()
+    buf.seek(0)
+    return buf
+
+
 def generate_statistics_report(user_stats: Dict, predictions: List[Dict], report_type: str = 'pdf') -> bytes:
     """
     Genera reporte de estadísticas descriptivas
@@ -457,13 +567,56 @@ def generate_statistics_report(user_stats: Dict, predictions: List[Dict], report
         # Recomendaciones
         pdf.add_section_title("Recomendaciones")
         recommendations = [
-            "• Analiza tus predicciones incorrectas para identificar patrones",
-            "• Incrementa confianza solo cuando tengas datos sólidos",
-            "• Diversifica tus predicciones entre diferentes deportes",
-            "• Mantén un registro detallado de tus análisis",
-            "• Revisa regularmente tu rendimiento contra el benchmark del mercado"
+            "- Analiza tus predicciones incorrectas para identificar patrones",
+            "- Incrementa confianza solo cuando tengas datos sólidos",
+            "- Diversifica tus predicciones entre diferentes deportes",
+            "- Mantén un registro detallado de tus análisis",
+            "- Revisa regularmente tu rendimiento contra el benchmark del mercado"
         ]
         pdf.add_text("\n".join(recommendations))
+
+        # --- SECCIÓN DE ANÁLISIS GRÁFICO (Nueva Página) ---
+        if not df_preds.empty:
+            pdf.pdf.add_page()
+            pdf.add_section_title("Análisis Gráfico y Visualizaciones Avanzadas")
+
+            # 1. Distribución de Confianza
+            if 'confidence_level' in df_preds.columns:
+                confidence_data = df_preds['confidence_level'].dropna().tolist()
+                if confidence_data:
+                    pdf.pdf.set_font("Arial", "B", 11)
+                    pdf.pdf.cell(0, 8, "Distribución de Confianza (Histograma + Curva Normal)", ln=True)
+                    dist_img = _generate_distribution_chart(confidence_data)
+                    pdf.add_image(dist_img, w=130)
+
+                    pdf.pdf.set_font("Arial", "B", 11)
+                    pdf.pdf.cell(0, 8, "Función de Distribución Acumulada (CDF)", ln=True)
+                    cdf_img = _generate_cdf_chart(confidence_data)
+                    pdf.add_image(cdf_img, w=130)
+
+            # 2. Serie Temporal y Status
+            # Creamos una nueva página para los siguientes gráficos para no sobrecargar el layout
+            pdf.pdf.add_page()
+            pdf.add_section_title("Evolución Temporal y Análisis por Status")
+
+            if 'created_at' in df_preds.columns:
+                df_preds['created_at'] = pd.to_datetime(df_preds['created_at'], errors='coerce')
+                df_sorted = df_preds.sort_values('created_at').dropna(subset=['created_at'])
+                if not df_sorted.empty:
+                    dates = df_sorted['created_at'].tolist()
+                    values = df_sorted.get('confidence_level', pd.Series(range(len(df_sorted)))).tolist()
+                    pdf.pdf.set_font("Arial", "B", 11)
+                    pdf.pdf.cell(0, 8, "Evolución de Confianza en el Tiempo", ln=True)
+                    time_img = _generate_time_series_chart(dates, values)
+                    pdf.add_image(time_img, w=150)
+
+            if 'prediction_status' in df_preds.columns:
+                statuses = df_preds['prediction_status'].dropna().tolist()
+                if statuses:
+                    pdf.pdf.set_font("Arial", "B", 11)
+                    pdf.pdf.cell(0, 8, "Distribución por Status de las Predicciones", ln=True)
+                    status_img = _generate_status_chart(statuses)
+                    pdf.add_image(status_img, w=130)
 
         pdf.add_timestamp()
         return pdf.output_bytes()

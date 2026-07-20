@@ -26,6 +26,7 @@ from openpyxl.utils.dataframe import dataframe_to_rows
 
 from db import init_db, get_teams_by_sport, get_pitchers, save_future_match
 from predict import predict_football, predict_nba, predict_mlb
+from reports import generate_statistics_report
 # ============================================================================
 # CONFIGURACIÓN DE LA PÁGINA
 # ============================================================================
@@ -988,68 +989,8 @@ def render_match_card(match: Dict):
         return False
 
 # ============================================================================
-# GENERADOR DE REPORTES - PDF Y EXCEL
+# GENERADOR DE REPORTES - PDF Y EXCEL (Importados de reports.py)
 # ============================================================================
-
-def generate_predictions_report_pdf(predictions: List[Dict]) -> bytes:
-    """Genera reporte PDF de predicciones"""
-    pdf = FPDF()
-    pdf.add_page()
-    pdf.set_font("Arial", "B", 16)
-    pdf.cell(0, 15, "REPORTE DE PREDICCIONES", ln=True, align="C")
-
-    pdf.set_font("Arial", "", 11)
-    pdf.ln(5)
-
-    df = pd.DataFrame(predictions) if predictions else pd.DataFrame()
-
-    if not df.empty:
-        total = len(df)
-        correct = len(df[df.get('prediction_status') == 'won']) if 'prediction_status' in df.columns else 0
-        accuracy = (correct / total * 100) if total > 0 else 0
-
-        pdf.cell(0, 8, f"Total de Predicciones: {total}", ln=True)
-        pdf.cell(0, 8, f"Predicciones Correctas: {correct}", ln=True)
-        pdf.cell(0, 8, f"Tasa de Precisión: {accuracy:.2f}%", ln=True)
-
-        if 'confidence_level' in df.columns:
-            avg_conf = df['confidence_level'].mean()
-            pdf.cell(0, 8, f"Confianza Promedio: {avg_conf:.2f}", ln=True)
-
-    pdf.ln(5)
-    pdf.set_font("Arial", "I", 8)
-    timestamp = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-    pdf.cell(0, 10, f"Generado: {timestamp}", align="R")
-
-    return bytes(pdf.output())
-
-
-def generate_predictions_report_excel(predictions: List[Dict]) -> bytes:
-    """Genera reporte Excel de predicciones"""
-    df = pd.DataFrame(predictions) if predictions else pd.DataFrame()
-
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "Predicciones"
-
-    # Headers
-    if not df.empty:
-        for col_idx, col_name in enumerate(df.columns, 1):
-            cell = ws.cell(row=1, column=col_idx)
-            cell.value = col_name
-            cell.font = Font(bold=True, color="FFFFFF")
-            cell.fill = PatternFill(start_color="667EEA", end_color="667EEA", fill_type="solid")
-
-        # Datos
-        for row_idx, row_data in enumerate(dataframe_to_rows(df, index=False, header=False), 2):
-            for col_idx, value in enumerate(row_data, 1):
-                cell = ws.cell(row=row_idx, column=col_idx)
-                cell.value = value
-
-    output = BytesIO()
-    wb.save(output)
-    output.seek(0)
-    return output.getvalue()
 
 
 # ============================================================================
@@ -1898,22 +1839,22 @@ def page_statistics():
 
         with col1:
             st.write(t("**Reporte en PDF**", "**PDF Report**", "**Relatório em PDF**"))
-            pdf_bytes = generate_predictions_report_pdf(predictions)
+            pdf_bytes = generate_statistics_report(user_stats, predictions, report_type='pdf')
             st.download_button(
                 label=t("📄 Descargar PDF", "📄 Download PDF", "📄 Baixar PDF"),
                 data=pdf_bytes,
-                file_name=f"predicciones_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
+                file_name=f"estadisticas_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
                 mime="application/pdf",
                 key="btn_dld_pdf"
             )
 
         with col2:
-            st.write(t("**Reporte en Excel**", "**Excel Report**", "**Relatório em Excel**"))
-            excel_bytes = generate_predictions_report_excel(predictions)
+            st.write(t("**Reporte en Excel**", "**Excel Report**", "**Relatório en Excel**"))
+            excel_bytes = generate_statistics_report(user_stats, predictions, report_type='excel')
             st.download_button(
                 label=t("📊 Descargar Excel", "📊 Download Excel", "📊 Baixar Excel"),
                 data=excel_bytes,
-                file_name=f"predicciones_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx",
+                file_name=f"estadisticas_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                 key="btn_dld_excel"
             )

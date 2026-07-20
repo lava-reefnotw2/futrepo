@@ -30,6 +30,7 @@ datasets/*.csv
 datasets/*.xlsx
 datasets/*.json
 
+
 # Reportes generados localmente
 *.pdf
 *.docx

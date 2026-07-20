@@ -153,6 +153,121 @@ def inject_theme_css():
             flex: none !important;
             min-width: 0 !important;
         }
+        
+        /* Custom Sidebar Styling */
+        .sidebar-logo-container {
+            display: flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+            padding: 10px 5px !important;
+            margin-bottom: 5px !important;
+        }
+        .sidebar-logo-icon {
+            font-size: 1.8rem !important;
+        }
+        .sidebar-logo-text {
+            font-size: 1.35rem !important;
+            font-weight: 700 !important;
+            letter-spacing: -0.025em !important;
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            -webkit-background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+            display: flex !important;
+            align-items: center !important;
+        }
+        .sidebar-logo-text .pro-tag {
+            font-size: 0.7rem !important;
+            font-weight: 800 !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.05em !important;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+            -webkit-text-fill-color: white !important;
+            color: white !important;
+            padding: 2px 6px !important;
+            border-radius: 6px !important;
+            margin-left: 6px !important;
+            display: inline-block !important;
+            line-height: 1 !important;
+        }
+        .sidebar-nav-label {
+            font-size: 0.75rem !important;
+            font-weight: 700 !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.08em !important;
+            color: #64748b !important;
+            margin-top: 15px !important;
+            margin-bottom: 12px !important;
+            padding-left: 5px !important;
+        }
+        
+        /* Page links as large cards */
+        [data-testid="stSidebar"] [data-testid="stPageLink"] {
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        [data-testid="stSidebar"] [data-testid="stPageLink"] a {
+            display: flex !important;
+            align-items: center !important;
+            padding: 14px 18px !important;
+            margin: 8px 0 !important;
+            border-radius: 12px !important;
+            border: 1px solid var(--sidebar-card-border) !important;
+            background-color: var(--sidebar-card-bg) !important;
+            color: var(--sidebar-card-fg) !important;
+            text-decoration: none !important;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+            height: auto !important;
+            width: 100% !important;
+        }
+        [data-testid="stSidebar"] [data-testid="stPageLink"] a:hover {
+            background-color: var(--sidebar-card-hover-bg) !important;
+            border-color: var(--sidebar-card-hover-border) !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 6px 16px var(--sidebar-card-hover-shadow) !important;
+            color: var(--sidebar-card-hover-fg) !important;
+        }
+        [data-testid="stSidebar"] [data-testid="stPageLink"] a [data-testid="stIcon"] {
+            font-size: 1.3rem !important;
+            margin-right: 12px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        [data-testid="stSidebar"] [data-testid="stPageLink"] a p {
+            font-size: 0.95rem !important;
+            font-weight: 600 !important;
+            margin: 0 !important;
+            color: inherit !important;
+        }
+        
+        /* Active page card styling using aria-current */
+        [data-testid="stSidebar"] [data-testid="stPageLink"] a[aria-current="page"] {
+            background: var(--active-gradient) !important;
+            border-color: var(--active-border) !important;
+            color: #ffffff !important;
+            font-weight: 700 !important;
+            box-shadow: var(--active-shadow) !important;
+        }
+        [data-testid="stSidebar"] [data-testid="stPageLink"] a[aria-current="page"] p {
+            font-weight: 700 !important;
+        }
+        
+        /* User info card styling */
+        .user-info-card {
+            background-color: var(--sidebar-card-bg) !important;
+            border: 1px solid var(--sidebar-card-border) !important;
+            border-radius: 12px !important;
+            padding: 14px !important;
+            margin-top: 15px !important;
+            margin-bottom: 10px !important;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+        }
+        .user-info-item {
+            font-size: 0.825rem !important;
+            margin: 4px 0 !important;
+            color: var(--sidebar-card-fg) !important;
+        }
         </style>
     """, unsafe_allow_html=True)
 
@@ -168,6 +283,16 @@ def inject_theme_css():
             [data-testid="stSidebar"] {
                 background-color: #0b0f19 !important;
                 border-right: 1px solid #1e293b !important;
+                --sidebar-card-bg: #111827 !important;
+                --sidebar-card-border: #1f2937 !important;
+                --sidebar-card-fg: #9ca3af !important;
+                --sidebar-card-hover-bg: #1f2937 !important;
+                --sidebar-card-hover-border: #4f46e5 !important;
+                --sidebar-card-hover-fg: #ffffff !important;
+                --sidebar-card-hover-shadow: rgba(79, 70, 229, 0.25) !important;
+                --active-gradient: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%) !important;
+                --active-border: #818cf8 !important;
+                --active-shadow: 0 4px 12px rgba(99, 102, 241, 0.3) !important;
             }
             [data-testid="stSidebar"] div, [data-testid="stSidebar"] section {
                 background-color: transparent !important;
@@ -238,6 +363,38 @@ def inject_theme_css():
                 color: #f8fafc !important;
                 border-bottom-color: #6366f1 !important;
             }
+            
+            /* Dark theme table styling */
+            div[data-testid="stTable"] table {
+                background-color: #1e293b !important;
+                color: #f8fafc !important;
+                border-collapse: collapse !important;
+                border-radius: 8px !important;
+                overflow: hidden !important;
+                width: 100% !important;
+            }
+            div[data-testid="stTable"] th {
+                background-color: #334155 !important;
+                color: #f8fafc !important;
+                border-bottom: 2px solid #475569 !important;
+                padding: 10px !important;
+            }
+            div[data-testid="stTable"] td {
+                background-color: #0f172a !important;
+                color: #e2e8f0 !important;
+                border-bottom: 1px solid #1e293b !important;
+                padding: 10px !important;
+            }
+            /* Dark theme code block styling */
+            div[data-testid="stCodeBlock"], pre, code, pre *, code * {
+                background-color: #1e293b !important;
+                color: #38bdf8 !important; /* cyan for better syntax highlight in dark mode */
+            }
+            div[data-testid="stCodeBlock"] pre {
+                background-color: #1e293b !important;
+                border: 1px solid #334155 !important;
+                border-radius: 8px !important;
+            }
             </style>
         """, unsafe_allow_html=True)
     else:
@@ -252,6 +409,16 @@ def inject_theme_css():
             [data-testid="stSidebar"] {
                 background-color: #f8fafc !important;
                 border-right: 1px solid #e2e8f0 !important;
+                --sidebar-card-bg: #ffffff !important;
+                --sidebar-card-border: #e2e8f0 !important;
+                --sidebar-card-fg: #475569 !important;
+                --sidebar-card-hover-bg: #f8fafc !important;
+                --sidebar-card-hover-border: #6366f1 !important;
+                --sidebar-card-hover-fg: #0f172a !important;
+                --sidebar-card-hover-shadow: rgba(99, 102, 241, 0.1) !important;
+                --active-gradient: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%) !important;
+                --active-border: #4f46e5 !important;
+                --active-shadow: 0 4px 12px rgba(99, 102, 241, 0.2) !important;
             }
             [data-testid="stSidebar"] div, [data-testid="stSidebar"] section {
                 background-color: transparent !important;
@@ -269,6 +436,38 @@ def inject_theme_css():
                 background-color: #ffffff !important;
                 border: 1px solid #e2e8f0 !important;
                 box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05) !important;
+            }
+            
+            /* Light theme table styling */
+            div[data-testid="stTable"] table {
+                background-color: #ffffff !important;
+                color: #1e293b !important;
+                border-collapse: collapse !important;
+                border-radius: 8px !important;
+                overflow: hidden !important;
+                width: 100% !important;
+            }
+            div[data-testid="stTable"] th {
+                background-color: #f1f5f9 !important;
+                color: #1e293b !important;
+                border-bottom: 2px solid #e2e8f0 !important;
+                padding: 10px !important;
+            }
+            div[data-testid="stTable"] td {
+                background-color: #ffffff !important;
+                color: #334155 !important;
+                border-bottom: 1px solid #f1f5f9 !important;
+                padding: 10px !important;
+            }
+            /* Light theme code block styling */
+            div[data-testid="stCodeBlock"], pre, code, pre *, code * {
+                background-color: #f1f5f9 !important;
+                color: #0369a1 !important;
+            }
+            div[data-testid="stCodeBlock"] pre {
+                background-color: #f1f5f9 !important;
+                border: 1px solid #e2e8f0 !important;
+                border-radius: 8px !important;
             }
             </style>
         """, unsafe_allow_html=True)
@@ -1015,10 +1214,10 @@ def create_descriptive_stats_table(predictions: List[Dict]) -> pd.DataFrame:
 
 def page_dashboard():
     """Página principal - Dashboard"""
-    st.title("⚽ Dashboard de Predicciones Deportivas")
+    st.title(t("⚽ Dashboard de Predicciones Deportivas", "⚽ Sports Predictions Dashboard", "⚽ Dashboard de Previsões Esportivas"))
 
     # Métricas principales
-    st.subheader("Tus Estadísticas")
+    st.subheader(t("Tus Estadísticas", "Your Statistics", "Suas Estatísticas"))
 
     user_stats = get_user_stats(st.session_state.user_id)
 
@@ -1026,39 +1225,39 @@ def page_dashboard():
 
     with col1:
         st.metric(
-            "Total Predicciones",
+            t("Total Predicciones", "Total Predictions", "Total de Previsões"),
             user_stats['total_predictions'],
-            delta=f"{np.random.randint(1, 5)} hoy"
+            delta=f"{np.random.randint(1, 5)} " + t("hoy", "today", "hoje")
         )
 
     with col2:
         st.metric(
-            "Tasa de Precisión",
+            t("Tasa de Precisión", "Accuracy Rate", "Taxa de Precisão"),
             f"{user_stats['accuracy_rate']:.1f}%",
             delta=f"+{np.random.randint(1, 5)}%" if user_stats['accuracy_rate'] > 0 else "0%"
         )
 
     with col3:
         st.metric(
-            "Confianza Promedio",
+            t("Confianza Promedio", "Average Confidence", "Confiança Média"),
             f"{user_stats['avg_confidence']:.2f}",
             delta="+0.05" if user_stats['avg_confidence'] > 0 else "0.00"
         )
 
     with col4:
         st.metric(
-            "Ranking Global",
+            t("Ranking Global", "Global Rank", "Classificação Global"),
             user_stats['rank'],
-            delta="+5 posiciones"
+            delta=f"+5 " + t("posiciones", "positions", "posições")
         )
 
     st.divider()
 
     # Próximos partidos creados por el usuario
-    st.subheader("📋 Próximos Partidos Guardados")
-    st.markdown("Partidos analizados y listos para tu predicción personal.")
+    st.subheader(t("📋 Próximos Partidos Guardados", "📋 Upcoming Saved Matches", "📋 Próximos Jogos Salvos"))
+    st.markdown(t("Partidos analizados y listos para tu predicción personal.", "Matches analyzed and ready for your personal prediction.", "Jogos analisados e prontos para sua previsão pessoal."))
 
-    with st.spinner("Cargando partidos desde la base de datos..."):
+    with st.spinner(t("Cargando partidos desde la base de datos...", "Loading matches from the database...", "Carregando jogos do banco de dados...")):
         matches = get_future_matches()
 
     if matches:
@@ -1067,23 +1266,27 @@ def page_dashboard():
                 col1, col2, col3 = st.columns(3)
 
                 with col1:
-                    st.write("**Predicción de nuestra IA:**")
-                    st.info(f"Ganador sugerido: **{match['prediccion_ia'].upper()}**")
+                    st.write(t("**Predicción de nuestra IA:**", "**Our AI Prediction:**", "**Previsão da nossa IA:**"))
+                    st.info(t(f"Ganador sugerido: **{match['prediccion_ia'].upper()}**", f"Suggested winner: **{match['prediccion_ia'].upper()}**", f"Vencedor sugerido: **{match['prediccion_ia'].upper()}**"))
                     if match['deporte'] == 'Futbol':
-                        st.write(f"V: {match['prob_visitante']*100:.1f}% | E: {match['prob_empate']*100:.1f}% | L: {match['prob_local']*100:.1f}%")
+                        st.write(t(f"V: {match['prob_visitante']*100:.1f}% | E: {match['prob_empate']*100:.1f}% | L: {match['prob_local']*100:.1f}%",
+                                   f"A: {match['prob_visitante']*100:.1f}% | D: {match['prob_empate']*100:.1f}% | H: {match['prob_local']*100:.1f}%",
+                                   f"V: {match['prob_visitante']*100:.1f}% | E: {match['prob_empate']*100:.1f}% | L: {match['prob_local']*100:.1f}%"))
                     else:
-                        st.write(f"Visita: {match['prob_visitante']*100:.1f}% | Local: {match['prob_local']*100:.1f}%")
+                        st.write(t(f"Visita: {match['prob_visitante']*100:.1f}% | Local: {match['prob_local']*100:.1f}%",
+                                   f"Away: {match['prob_visitante']*100:.1f}% | Home: {match['prob_local']*100:.1f}%",
+                                   f"Visita: {match['prob_visitante']*100:.1f}% | Local: {match['prob_local']*100:.1f}%"))
 
                 with col2:
-                    st.write("**Tu Predicción:**")
-                    opciones = ['Local', 'Empate', 'Visitante'] if match['deporte'] == 'Futbol' else ['Local', 'Visitante']
-                    tu_pred = st.selectbox("¿Quién crees que ganará?", opciones, key=f"user_pred_{i}")
+                    st.write(t("**Tu Predicción:**", "**Your Prediction:**", "**Sua Previsão:**"))
+                    opciones = [t('Local', 'Home', 'Local'), t('Empate', 'Draw', 'Empate'), t('Visitante', 'Away', 'Visitante')] if match['deporte'] == 'Futbol' else [t('Local', 'Home', 'Local'), t('Visitante', 'Away', 'Visitante')]
+                    tu_pred = st.selectbox(t("¿Quién crees que ganará?", "Who do you think will win?", "Quem você acha que vai ganhar?"), opciones, key=f"user_pred_{i}")
 
                 with col3:
-                    st.write("**Confianza:**")
-                    confidence = st.slider("Nivel de confianza", 0.0, 1.0, 0.5, step=0.1, key=f"conf_{i}")
+                    st.write(t("**Confianza:**", "**Confidence:**", "**Confiança:**"))
+                    confidence = st.slider(t("Nivel de confianza", "Confidence level", "Nível de confiança"), 0.0, 1.0, 0.5, step=0.1, key=f"conf_{i}")
 
-                    if st.button("🎯 Guardar mi predicción", key=f"btn_{i}"):
+                    if st.button(t("🎯 Guardar mi predicción", "🎯 Save my prediction", "🎯 Salvar minha previsão"), key=f"btn_{i}"):
                         try:
                             prisma_save_prediction(
                                 user_id=st.session_state.user_id,
@@ -1093,17 +1296,17 @@ def page_dashboard():
                                 is_manual=True,
                                 ai_data=json.dumps({"prediccion_ia": match.get('prediccion_ia')})
                             )
-                            st.success("✅ Predicción guardada en tu perfil exitosamente")
+                            st.success(t("✅ Predicción guardada en tu perfil exitosamente", "✅ Prediction saved to your profile successfully", "✅ Previsão salva no seu perfil com sucesso"))
                             st.balloons()
                         except Exception as e:
-                            st.error(f"Error guardando predicción: {e}")
+                            st.error(t(f"Error guardando predicción: {e}", f"Error saving prediction: {e}", f"Erro ao salvar previsão: {e}"))
     else:
-        st.info("No hay partidos futuros guardados. Ve a 'Crear Predicción' para añadir uno.")
+        st.info(t("No hay partidos futuros guardados. Ve a 'Crear Predicción' para añadir uno.", "No upcoming saved matches. Go to 'Create Prediction' to add one.", "Não há jogos futuros salvos. Vá para 'Criar Previsão' para adicionar um."))
 
     st.divider()
 
     # Gráfico de rendimiento
-    st.subheader("📈 Tu Rendimiento Reciente")
+    st.subheader(t("📈 Tu Rendimiento Reciente", "📈 Your Recent Performance", "📈 Seu Desempenho Recente"))
 
     # Datos simulados
     days = pd.date_range(end=datetime.now(), periods=30)
@@ -1120,7 +1323,7 @@ def page_dashboard():
             df_performance,
             x='fecha',
             y='precisión',
-            title='Evolución de Precisión (30 días)',
+            title=t('Evolución de Precisión (30 días)', 'Accuracy Evolution (30 days)', 'Evolução da Precisão (30 dias)'),
             markers=True,
             color_discrete_sequence=['#FF4B4B']
         )
@@ -1132,14 +1335,14 @@ def page_dashboard():
             df_performance,
             x='fecha',
             y='predicciones',
-            title='Volumen de Predicciones',
+            title=t('Volumen de Predicciones', 'Prediction Volume', 'Volume de Previsões'),
             color_discrete_sequence=['#00CC96']
         )
         st.plotly_chart(fig_volume, use_container_width=True)
 
 def page_my_predictions():
     """Página de mis predicciones"""
-    st.title("📊 Mis Predicciones")
+    st.title(t("📊 Mis Predicciones", "📊 My Predictions", "📊 Minhas Previsões"))
 
     predictions = get_user_predictions(st.session_state.user_id)
 
@@ -1149,50 +1352,56 @@ def page_my_predictions():
         # Resumen
         col1, col2, col3 = st.columns(3)
         with col1:
-            st.metric("Total de predicciones", len(df))
+            st.metric(t("Total de predicciones", "Total predictions", "Total de previsões"), len(df))
         with col2:
             high_conf = len(df[df['confidence_level'] > 0.7])
-            st.metric("Alta confianza (>70%)", high_conf)
+            st.metric(t("Alta confianza (>70%)", "High confidence (>70%)", "Alta confiança (>70%)"), high_conf)
         with col3:
             avg_conf = df['confidence_level'].mean()
-            st.metric("Confianza promedio", f"{avg_conf:.2f}")
+            st.metric(t("Confianza promedio", "Average confidence", "Confiança média"), f"{avg_conf:.2f}")
 
         st.divider()
 
         # Tabla de predicciones
-        st.subheader("Historial de Predicciones")
+        st.subheader(t("Historial de Predicciones", "Prediction History", "Histórico de Previsões"))
 
         display_df = df[['match_id', 'predicted_home_score', 'predicted_away_score', 'confidence_level', 'created_at']].copy()
-        display_df.columns = ['ID Partido', 'Goles Local', 'Goles Visitante', 'Confianza', 'Fecha']
+        display_df.columns = [
+            t('ID Partido', 'Match ID', 'ID do Jogo'),
+            t('Goles Local', 'Home Goals', 'Gols do Local'),
+            t('Goles Visitante', 'Away Goals', 'Gols do Visitante'),
+            t('Confianza', 'Confidence', 'Confiança'),
+            t('Fecha', 'Date', 'Data')
+        ]
 
-        st.dataframe(display_df, use_container_width=True)
+        st.table(display_df)
 
         # Análisis
-        st.subheader("📈 Análisis de Confianza")
+        st.subheader(t("📈 Análisis de Confianza", "📈 Confidence Analysis", "📈 Análise de Confiança"))
 
         fig = px.histogram(
             df,
             x='confidence_level',
             nbins=20,
-            title='Distribución de Niveles de Confianza',
+            title=t('Distribución de Niveles de Confianza', 'Distribution of Confidence Levels', 'Distribuição dos Níveis de Confiança'),
             color_discrete_sequence=['#FF4B4B']
         )
         st.plotly_chart(fig, use_container_width=True)
     else:
-        st.info("Aún no has realizado predicciones. ¡Comienza ahora!")
+        st.info(t("Aún no has realizado predicciones. ¡Comienza ahora!", "You haven't made any predictions yet. Start now!", "Você ainda não fez nenhuma previsão. Comece agora!"))
 
 import json
 from reports import generate_consolidated_report
 
 def page_ai_predictions():
     """Página de predicciones con IA"""
-    st.title("🤖 Predicciones con Inteligencia Artificial")
+    st.title(t("🤖 Predicciones con Inteligencia Artificial", "🤖 Artificial Intelligence Predictions", "🤖 Previsões com Inteligência Artificial"))
 
-    st.markdown("""
-    Nuestra inteligencia artificial se somete a una rigurosa evaluación de validación cruzada.
-    Se utiliza el **historial histórico completo** para entrenamiento, reservando estrictamente los 
-    **últimos 365 días** de resultados reales para evaluar la precisión del modelo en escenarios no vistos.
-    """)
+    st.markdown(t(
+        "Nuestra inteligencia artificial se somete a una rigurosa evaluación de validación cruzada. Se utiliza el **historial histórico completo** para entrenamiento, reservando estrictamente los **últimos 365 días** de resultados reales para evaluar la precisión del modelo en escenarios no vistos.",
+        "Our artificial intelligence undergoes rigorous cross-validation evaluation. The **full historical records** are used for training, strictly reserving the **last 365 days** of real results to evaluate model accuracy in unseen scenarios.",
+        "Nossa inteligência artificial passa por uma rigorosa avaliação de validação cruzada. O **historico completo** é utilizado para treinamento, reservando estritamente os **últimos 365 dias** de resultados reais para avaliar a precisão del modelo em cenarios não vistos."
+    ))
 
     st.divider()
 
@@ -1203,27 +1412,29 @@ def page_ai_predictions():
     # Mostrar la última predicción realizada si está activa
     if st.session_state.active_prediction:
         act = st.session_state.active_prediction
-        st.markdown("<div style='border: 2px solid #667eea; padding: 20px; border-radius: 12px; margin-bottom: 20px; background-color: #1e1e1e;'>", unsafe_allow_html=True)
-        st.subheader("🔮 Último Análisis de IA Generado")
+        box_bg = "#1e293b" if st.session_state.theme == "dark" else "#f8fafc"
+        box_text = "#f8fafc" if st.session_state.theme == "dark" else "#1e293b"
+        st.markdown(f"<div style='border: 2px solid #667eea; padding: 20px; border-radius: 12px; margin-bottom: 20px; background-color: {box_bg}; color: {box_text};'>", unsafe_allow_html=True)
+        st.subheader(t("🔮 Último Análisis de IA Generado", "🔮 Latest AI Analysis Generated", "🔮 Última Análise de IA Gerada"))
         col_m_left, col_m_right = st.columns([3, 2])
         with col_m_left:
             st.write(f"### {act['home_team']} vs {act['away_team']}")
-            st.success(f"Favorito: **{act['pred_label'].upper()}**")
-            st.info(f"📈 **Confianza:** {act['confidence']*100:.1f}%")
+            st.success(t(f"Favorito: **{act['pred_label'].upper()}**", f"Favorite: **{act['pred_label'].upper()}**", f"Favorito: **{act['pred_label'].upper()}**"))
+            st.info(t(f"📈 **Confianza:** {act['confidence']*100:.1f}%", f"📈 **Confidence:** {act['confidence']*100:.1f}%", f"📈 **Confiança:** {act['confidence']*100:.1f}%"))
         with col_m_right:
-            labels = ['Visitante', 'Empate', 'Local']
+            labels = [t('Visitante', 'Away', 'Visitante'), t('Empate', 'Draw', 'Empate'), t('Local', 'Home', 'Local')]
             values = [act['probs']['visitante']*100, act['probs']['empate']*100, act['probs']['local']*100]
             fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.5, marker_colors=['#f5576c', '#aaaaaa', '#667eea'])])
             fig.update_layout(height=220, margin=dict(t=20, b=0, l=0, r=0))
             st.plotly_chart(fig, use_container_width=True)
         
-        if st.button("❌ Cerrar Análisis", use_container_width=True):
+        if st.button(t("❌ Cerrar Análisis", "❌ Close Analysis", "❌ Fechar Análise"), use_container_width=True):
             st.session_state.active_prediction = None
             st.rerun()
         st.markdown("</div>", unsafe_allow_html=True)
 
-    st.subheader("📅 Partidos Futuros (Mundial)")
-    st.write("Selecciona una fecha (hasta 4 días en el futuro) para ver los próximos partidos de fútbol y obtener una predicción de nuestra IA.")
+    st.subheader(t("📅 Partidos Futuros (Mundial)", "📅 Future Matches (Worldwide)", "📅 Jogos Futuros (Mundial)"))
+    st.write(t("Selecciona una fecha (hasta 4 días en el futuro) para ver los próximos partidos de fútbol y obtener una predicción de nuestra IA.", "Select a date (up to 4 days in the future) to see upcoming soccer matches and get an AI prediction.", "Selecione uma data (até 4 dias no futuro) para ver os próximos jogos de futebol e obter uma previsão da nossa IA."))
     
     if 'api_matches' not in st.session_state:
         st.session_state.api_matches = []
@@ -1232,7 +1443,7 @@ def page_ai_predictions():
     col_date, col_empty = st.columns([1, 3])
     with col_date:
         selected_date = st.date_input(
-            "Fecha de los partidos",
+            t("Fecha de los partidos", "Matches date", "Data dos jogos"),
             value=datetime.now().date(),
             min_value=datetime.now().date(),
             max_value=(datetime.now() + timedelta(days=4)).date()
@@ -1241,7 +1452,7 @@ def page_ai_predictions():
     date_str = selected_date.strftime("%Y-%m-%d")
     
     if st.session_state.last_api_date != date_str:
-        with st.spinner("Conectando con API-Football..."):
+        with st.spinner(t("Conectando con API-Football...", "Connecting to API-Football...", "Conectando com a API-Football...")):
             st.session_state.api_matches = api_client.get_matches_by_date(date_str)
             st.session_state.last_api_date = date_str
 
@@ -1254,22 +1465,27 @@ def page_ai_predictions():
         matches = [m for m in st.session_state.api_matches if m.get('fixture', {}).get('id') not in predicted_match_ids]
         
         if matches:
-            st.success(f"Se encontraron {len(matches)} partidos programados para el {st.session_state.last_api_date} (excluyendo tus predicciones).")
+            st.success(t(f"Se encontraron {len(matches)} partidos programados para el {st.session_state.last_api_date} (excluyendo tus predicciones).",
+                         f"Found {len(matches)} matches scheduled for {st.session_state.last_api_date} (excluding your predictions).",
+                         f"Foram encontrados {len(matches)} jogos agendados para {st.session_state.last_api_date} (excluindo suas previsões)."))
             
             for i, match in enumerate(matches[:15]): 
                 fixture = match.get('fixture', {})
                 teams = match.get('teams', {})
                 league = match.get('league', {})
                 
-                home_team = teams.get('home', {}).get('name', 'Local')
-                away_team = teams.get('away', {}).get('name', 'Visitante')
+                home_team = teams.get('home', {}).get('name', t('Local', 'Home', 'Local'))
+                away_team = teams.get('away', {}).get('name', t('Visitante', 'Away', 'Visitante'))
                 match_time = fixture.get('date', '').split('T')[1][:5] if 'T' in fixture.get('date', '') else ''
                 
                 with st.container():
-                    st.markdown(f"<div style='border:1px solid #333; padding: 15px; border-radius: 8px; margin-bottom: 10px; background-color: #1e1e1e;'>", unsafe_allow_html=True)
+                    box_bg = "#1e293b" if st.session_state.theme == "dark" else "#f8fafc"
+                    box_border = "#334155" if st.session_state.theme == "dark" else "#e2e8f0"
+                    box_text = "#f8fafc" if st.session_state.theme == "dark" else "#1e293b"
+                    st.markdown(f"<div style='border: 1px solid {box_border}; padding: 15px; border-radius: 8px; margin-bottom: 10px; background-color: {box_bg}; color: {box_text};'>", unsafe_allow_html=True)
                     col1, col2, col3 = st.columns([2, 3, 2])
                     with col1:
-                        st.write(f"🏆 **{league.get('name', 'Liga')}**")
+                        st.write(t(f"🏆 **{league.get('name', 'Liga')}**", f"🏆 **{league.get('name', 'League')}**", f"🏆 **{league.get('name', 'Liga')}**"))
                         st.write(f"⏱️ {match_time}")
                     with col2:
                         st.write(f"🏠 **{home_team}**")
@@ -1278,8 +1494,8 @@ def page_ai_predictions():
                     with col3:
                         # Usar el ID del fixture en la clave del botón para evitar colisiones
                         btn_key = f"pred_api_{fixture.get('id', i)}"
-                        if st.button(f"🔮 Predecir", key=btn_key, use_container_width=True):
-                            with st.spinner("Analizando historial..."):
+                        if st.button(t("🔮 Predecir", "🔮 Predict", "🔮 Prever"), key=btn_key, use_container_width=True):
+                            with st.spinner(t("Analizando historial...", "Analyzing history...", "Analisando histórico...")):
                                 try:
                                     probs = predict_football(home_team, away_team)
                                     pred_label = max(probs, key=probs.get)
@@ -1309,56 +1525,58 @@ def page_ai_predictions():
                     st.markdown("</div>", unsafe_allow_html=True)
             
             if len(matches) > 15:
-                st.info(f"... y {len(matches) - 15} partidos más. (Se muestran los primeros 15).")
+                st.info(t(f"... y {len(matches) - 15} partidos más. (Se muestran los primeros 15).", f"... and {len(matches) - 15} more matches. (Showing first 15).", f"... e mais {len(matches) - 15} jogos. (Mostrando os primeiros 15)."))
         else:
-            st.info("Ya has realizado predicciones para todos los partidos disponibles en esta fecha.")
+            st.info(t("Ya has realizado predicciones para todos los partidos disponibles en esta fecha.", "You have already made predictions for all available matches on this date.", "Você já fez previsões para todos os jogos disponíveis nesta data."))
             
     st.divider()
 
     if not is_admin():
-        st.info("Los resultados detallados del modelo y la exportación consolidada están restringidos al rol ADMIN.")
+        st.info(t("Los resultados detallados del modelo y la exportación consolidada están restringidos al rol ADMIN.", "Detailed model results and consolidated export are restricted to the ADMIN role.", "Resultados detalhados do modelo e exportação consolidada são restritos à função ADMIN."))
         return
 
     try:
         with open('model_results.json', 'r') as f:
             model_results = json.load(f)
     except FileNotFoundError:
-        st.warning("⏳ Los modelos se están entrenando en este momento (Time-Based Split). Por favor, regresa más tarde para ver los resultados.")
+        st.warning(t("⏳ Los modelos se están entrenando en este momento (Time-Based Split). Por favor, regresa más tarde para ver los resultados.", "⏳ Models are currently training (Time-Based Split). Please return later to see the results.", "⏳ Os modelos estão treinando no momento (Time-Based Split). Por favor, volte mais tarde para ver os resultados."))
         return
 
     st.subheader("📊 Resultados de Validación Cronológica (Último Año)")
     
     # Selector de deporte
     deportes = list(model_results.keys())
-    sport = st.selectbox("Deporte a visualizar", deportes, format_func=lambda x: x.upper())
+    sport = st.selectbox(t("Deporte a visualizar", "Sport to visualize", "Esporte a visualizar"), deportes, format_func=lambda x: x.upper())
     
     result = model_results[sport]
     best_model = result['best_model']
     model_details = result['model_details']
 
-    st.info(f"🏆 El modelo **{best_model.upper()}** fue seleccionado como el mejor y es el utilizado para inferencias en vivo.")
+    st.info(t(f"🏆 El modelo **{best_model.upper()}** fue seleccionado como el mejor y es el utilizado para inferencias en vivo.",
+              f"🏆 The model **{best_model.upper()}** was selected as the best and is the one used for live inferences.",
+              f"🏆 O modelo **{best_model.upper()}** foi selecionado como o melhor e é o usado para inferências ao vivo."))
 
     # Convertir JSON a DataFrame para mostrar
     records = []
     for m_name, details in model_details.items():
         records.append({
-            'Modelo': f"⭐ {m_name.upper()}" if m_name == best_model else m_name.upper(),
-            'Accuracy': f"{details.get('accuracy', 0)*100:.2f}%",
-            'F1 Score': f"{details.get('f1', 0):.4f}",
-            'Tiempo de Entr. (s)': f"{details.get('time_s', 0):.1f}"
+            t('Modelo', 'Model', 'Modelo'): f"⭐ {m_name.upper()}" if m_name == best_model else m_name.upper(),
+            t('Accuracy', 'Accuracy', 'Acurácia'): f"{details.get('accuracy', 0)*100:.2f}%",
+            t('F1 Score', 'F1 Score', 'Pontuação F1'): f"{details.get('f1', 0):.4f}",
+            t('Tiempo de Entr. (s)', 'Training Time (s)', 'Tempo de Treino (s)'): f"{details.get('time_s', 0):.1f}"
         })
     df_eval = pd.DataFrame(records)
     
-    st.dataframe(df_eval, use_container_width=True)
+    st.table(df_eval)
 
-    with st.expander("Ver Hiperparámetros Óptimos"):
+    with st.expander(t("Ver Hiperparámetros Óptimos", "View Optimal Hyperparameters", "Ver Hiperparâmetros Ótimos")):
         for m_name, details in model_details.items():
             params = details.get('params', {})
             if params:
                 st.write(f"**{m_name.upper()}**:")
                 st.code(json.dumps(params, indent=2))
             else:
-                st.write(f"**{m_name.upper()}**: Default")
+                st.write(t(f"**{m_name.upper()}**: Default", f"**{m_name.upper()}**: Default", f"**{m_name.upper()}**: Padrão"))
 
     if sport == 'futbol':
         try:
@@ -1367,45 +1585,51 @@ def page_ai_predictions():
             
             for extra_key, extra_data in futbol_extras.items():
                 st.write("")
-                extra_title = "⚽ Fútbol - Goles Over/Under 2.5" if extra_key == "futbol_over25" else "⚽ Fútbol - Ambos Anotan (BTTS)"
+                extra_title = t("⚽ Fútbol - Goles Over/Under 2.5", "⚽ Football - Goals Over/Under 2.5", "⚽ Futebol - Gols Over/Under 2.5") if extra_key == "futbol_over25" else t("⚽ Fútbol - Ambos Anotan (BTTS)", "⚽ Football - Both Teams to Score (BTTS)", "⚽ Futebol - Ambas Marcam (BTTS)")
                 st.markdown(f"### {extra_title}")
                 
                 best_model_extra = extra_data['best_model']
                 model_details_extra = extra_data['model_details']
                 
-                st.info(f"🏆 El modelo **{best_model_extra.upper()}** fue seleccionado como el mejor y es el utilizado para inferencias en vivo.")
+                st.info(t(f"🏆 El modelo **{best_model_extra.upper()}** fue seleccionado como el mejor y es el utilizado para inferencias en vivo.",
+                          f"🏆 The model **{best_model_extra.upper()}** was selected as the best and is the one used for live inferences.",
+                          f"🏆 O modelo **{best_model_extra.upper()}** foi seleccionado como o melhor e é o usado para inferências ao vivo."))
                 
                 records_extra = []
                 for m_name, details in model_details_extra.items():
                     records_extra.append({
-                        'Modelo': f"⭐ {m_name.upper()}" if m_name == best_model_extra else m_name.upper(),
-                        'Accuracy': f"{details.get('accuracy', 0)*100:.2f}%",
-                        'F1 Score': f"{details.get('f1', 0):.4f}",
-                        'Tiempo de Entr. (s)': f"{details.get('time_s', 0):.1f}"
+                        t('Modelo', 'Model', 'Modelo'): f"⭐ {m_name.upper()}" if m_name == best_model_extra else m_name.upper(),
+                        t('Accuracy', 'Accuracy', 'Acurácia'): f"{details.get('accuracy', 0)*100:.2f}%",
+                        t('F1 Score', 'F1 Score', 'Pontuação F1'): f"{details.get('f1', 0):.4f}",
+                        t('Tiempo de Entr. (s)', 'Training Time (s)', 'Tempo de Treino (s)'): f"{details.get('time_s', 0):.1f}"
                     })
                 df_eval_extra = pd.DataFrame(records_extra)
-                st.dataframe(df_eval_extra, use_container_width=True)
+                st.table(df_eval_extra)
                 
-                with st.expander(f"Ver Hiperparámetros Óptimos ({extra_title})"):
+                with st.expander(t(f"Ver Hiperparámetros Óptimos ({extra_title})", f"View Optimal Hyperparameters ({extra_title})", f"Ver Hiperparâmetros Ótimos ({extra_title})")):
                     for m_name, details in model_details_extra.items():
                         params = details.get('params', {})
                         if params:
                             st.write(f"**{m_name.upper()}**:")
                             st.code(json.dumps(params, indent=2))
                         else:
-                            st.write(f"**{m_name.upper()}**: Default")
+                            st.write(t(f"**{m_name.upper()}**: Default", f"**{m_name.upper()}**: Default", f"**{m_name.upper()}**: Padrão"))
         except FileNotFoundError:
-            st.warning("⏳ Los modelos extras de fútbol (Over 2.5 y BTTS) se están entrenando en este momento. Por favor, regresa más tarde para ver los resultados.")
+            st.warning(t("⏳ Los modelos extras de fútbol (Over 2.5 y BTTS) se están entrenando en este momento. Por favor, regresa más tarde para ver los resultados.",
+                         "⏳ Extra football models (Over 2.5 and BTTS) are currently training. Please return later to see the results.",
+                         "⏳ Modelos extras de futebol (Over 2.5 e BTTS) estão treinando no momento. Por favor, volte mais tarde para ver os resultados."))
 
     st.divider()
     
-    st.write("### 📄 Exportar Reporte Consolidado")
-    st.write("Descarga un informe detallado con las métricas y configuraciones de todos los modelos entrenados.")
+    st.write(t("### 📄 Exportar Reporte Consolidado", "### 📄 Export Consolidated Report", "### 📄 Exportar Relatório Consolidado"))
+    st.write(t("Descarga un informe detallado con las métricas y configuraciones de todos los modelos entrenados.",
+               "Download a detailed report with the metrics and configurations of all trained models.",
+               "Baixe um relatório detalhado com as métricas e configurações de todos os modelos treinados."))
     
     report_bytes = generate_consolidated_report('model_results.json')
     if report_bytes:
         st.download_button(
-            label="⬇️ Descargar Reporte Completo (Word)",
+            label=t("⬇️ Descargar Reporte Completo (Word)", "⬇️ Download Full Report (Word)", "⬇️ Baixar Relatório Completo (Word)"),
             data=report_bytes,
             file_name=f"Reporte_Definitivo_Modelos_{datetime.now().strftime('%Y%m%d')}.docx",
             mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
@@ -1413,25 +1637,25 @@ def page_ai_predictions():
 
 def page_competitions():
     """Página de competencias"""
-    st.title("🏆 Competencias y Torneos")
+    st.title(t("🏆 Competencias y Torneos", "🏆 Competitions and Tournaments", "🏆 Competições e Torneios"))
 
     # Datos de ejemplo
     competitions_data = [
         {
             'id': 1,
-            'name': 'Liga Predictor Enero',
-            'description': 'Predice correctamente y gana premios semanales',
+            'name': t('Liga Predictor Enero', 'January Predictor League', 'Liga Predictor Janeiro'),
+            'description': t('Predice correctamente y gana premios semanales', 'Predict correctly and win weekly prizes', 'Preveja corretamente e ganhe prêmios semanais'),
             'participants': 245,
             'prize': '$1,000',
-            'entry_fee': 'Gratis',
+            'entry_fee': t('Gratis', 'Free', 'Grátis'),
             'deadline': '2024-01-31',
             'status': 'active',
             'prize_pool': 1000
         },
         {
             'id': 2,
-            'name': 'Torneo Premium Elite',
-            'description': 'Exclusivo para suscriptores premium - Grandes premios',
+            'name': t('Torneo Premium Elite', 'Premium Elite Tournament', 'Torneio Premium Elite'),
+            'description': t('Exclusivo para suscriptores premium - Grandes premios', 'Exclusive for premium subscribers - Big prizes', 'Exclusivo para assinantes premium - Grandes prêmios'),
             'participants': 89,
             'prize': '$2,500',
             'entry_fee': '$10',
@@ -1441,11 +1665,11 @@ def page_competitions():
         },
         {
             'id': 3,
-            'name': 'Desafío de 100 Predicciones',
-            'description': 'Realiza 100 predicciones precisas y gana jackpot',
+            'name': t('Desafío de 100 Predicciones', '100 Predictions Challenge', 'Desafio de 100 Previsões'),
+            'description': t('Realiza 100 predicciones precisas y gana jackpot', 'Make 100 accurate predictions and win jackpot', 'Faça 100 previsões precisas e ganhe jackpot'),
             'participants': 156,
             'prize': '$500',
-            'entry_fee': 'Gratis',
+            'entry_fee': t('Gratis', 'Free', 'Grátis'),
             'deadline': '2024-02-15',
             'status': 'active',
             'prize_pool': 500
@@ -1455,47 +1679,47 @@ def page_competitions():
     col1, col2 = st.columns([2, 1])
 
     with col1:
-        st.subheader("Competencias Disponibles")
+        st.subheader(t("Competencias Disponibles", "Available Competitions", "Competições Disponíveis"))
 
         for comp in competitions_data:
             with st.expander(f"🏆 {comp['name']}"):
-                st.write(f"**Descripción:** {comp['description']}")
+                st.write(t(f"**Descripción:** {comp['description']}", f"**Description:** {comp['description']}", f"**Descrição:** {comp['description']}"))
 
                 col_a, col_b, col_c = st.columns(3)
 
                 with col_a:
-                    st.metric("Participantes", comp['participants'])
+                    st.metric(t("Participantes", "Participants", "Participantes"), comp['participants'])
 
                 with col_b:
-                    st.metric("Premio Total", comp['prize'])
+                    st.metric(t("Premio Total", "Total Prize", "Prêmio Total"), comp['prize'])
 
                 with col_c:
-                    st.metric("Entrada", comp['entry_fee'])
+                    st.metric(t("Entrada", "Entry", "Entrada"), comp['entry_fee'])
 
-                st.write(f"📅 **Cierra:** {comp['deadline']}")
+                st.write(t(f"📅 **Cierra:** {comp['deadline']}", f"📅 **Closes:** {comp['deadline']}", f"📅 **Fecha:** {comp['deadline']}"))
 
                 col_x, col_y = st.columns(2)
 
                 with col_x:
-                    if comp['entry_fee'] == 'Gratis':
-                        if st.button("✅ Unirse", key=f"join_{comp['id']}"):
+                    if comp['entry_fee'] == t('Gratis', 'Free', 'Grátis'):
+                        if st.button(t("✅ Unirse", "✅ Join", "✅ Juntar-se"), key=f"join_{comp['id']}"):
                             st.session_state.selected_competitions.append(comp['id'])
-                            st.success(f"¡Te has unido a {comp['name']}!")
+                            st.success(t(f"¡Te has unido a {comp['name']}!", f"You have joined {comp['name']}!", f"Você se juntou a {comp['name']}!"))
                             st.balloons()
                     else:
-                        if st.session_state.user_tier == 'premium':
-                            if st.button("✅ Unirse", key=f"join_{comp['id']}"):
+                        if st.session_state.user_tier in ['premium', 'pro', 'elite']:
+                            if st.button(t("✅ Unirse", "✅ Join", "✅ Juntar-se"), key=f"join_{comp['id']}"):
                                 st.session_state.selected_competitions.append(comp['id'])
-                                st.success(f"¡Te has unido a {comp['name']}!")
+                                st.success(t(f"¡Te has unido a {comp['name']}!", f"You have joined {comp['name']}!", f"Você se juntou a {comp['name']}!"))
                                 st.balloons()
                         else:
-                            st.warning("💎 Requiere suscripción Premium")
+                            st.warning(t("💎 Requiere suscripción Premium", "💎 Requires Premium subscription", "💎 Requer assinatura Premium"))
 
                 with col_y:
-                    st.write(f"Status: ✅ Activa")
+                    st.write(t("Status: ✅ Activa", "Status: ✅ Active", "Status: ✅ Ativa"))
 
     with col2:
-        st.subheader("📊 Tu Ranking")
+        st.subheader(t("📊 Tu Ranking", "📊 Your Rank", "📊 Sua Classificação"))
 
         ranking_positions = [
             {'pos': 1, 'user': 'PredictorPro', 'score': 1850, 'acc': '78%'},
@@ -1503,11 +1727,11 @@ def page_competitions():
             {'pos': 3, 'user': 'BetMaster', 'score': 1780, 'acc': '74%'},
             {'pos': 4, 'user': 'DataAnalyst', 'score': 1750, 'acc': '72%'},
             {'pos': 5, 'user': 'GoldenPredictor', 'score': 1720, 'acc': '71%'},
-            {'pos': 15, 'user': '👤 Tú', 'score': 1520, 'acc': '68%'},
+            {'pos': 15, 'user': t('👤 Tú', '👤 You', '👤 Você'), 'score': 1520, 'acc': '68%'},
         ]
 
         for rank in ranking_positions:
-            if rank['user'] == '👤 Tú':
+            if "Tú" in rank['user'] or "You" in rank['user'] or "Você" in rank['user'] or rank['user'] == t('👤 Tú', '👤 You', '👤 Você'):
                 st.markdown(
                     f"<div style='background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); "
                     f"color: white; padding: 10px; border-radius: 5px; margin: 5px 0;'>"
@@ -1520,61 +1744,72 @@ def page_competitions():
 
 def page_statistics():
     """Página de estadísticas avanzadas con gráficos y reportes"""
-    st.title("📊 ESTADÍSTICAS DESCRIPTIVAS Y ANÁLISIS")
+    st.title(t("📊 ESTADÍSTICAS DESCRIPTIVAS Y ANÁLISIS", "📊 DESCRIPTIVE STATISTICS AND ANALYSIS", "📊 ESTATÍSTICAS DESCRITIVAS E ANÁLISE"))
 
     user_stats = get_user_stats(st.session_state.user_id)
     predictions = get_user_predictions(st.session_state.user_id)
 
     # ============ TAB 1: RESUMEN ============
     tab1, tab2, tab3, tab4, tab5 = st.tabs(
-        ["📈 Resumen", "📋 Tablas", "📊 Gráficos Avanzados", "📥 Reportes", "💡 Insights"]
+        [t("📈 Resumen", "📈 Summary", "📈 Resumo"),
+         t("📋 Tablas", "📋 Tables", "📋 Tabelas"),
+         t("📊 Gráficos Avanzados", "📊 Advanced Charts", "📊 Gráficos Avançados"),
+         t("📥 Reportes", "📥 Reports", "📥 Relatórios"),
+         t("💡 Insights", "💡 Insights", "💡 Insights")]
     )
 
     with tab1:
-        st.subheader("Resumen General")
+        st.subheader(t("Resumen General", "General Summary", "Resumo Geral"))
 
         col1, col2, col3, col4 = st.columns(4)
 
         with col1:
             st.metric(
-                "Total Predicciones",
+                t("Total Predicciones", "Total Predictions", "Total de Previsões"),
                 user_stats['total_predictions'],
                 delta=f"+{user_stats['total_predictions'] % 10}"
             )
 
         with col2:
             st.metric(
-                "Tasa de Precisión",
+                t("Tasa de Precisión", "Accuracy Rate", "Taxa de Precisão"),
                 f"{user_stats['accuracy_rate']:.1f}%",
                 delta=f"+{user_stats['accuracy_rate'] - 55:.1f}%" if user_stats['accuracy_rate'] > 55 else "-2%"
             )
 
         with col3:
             st.metric(
-                "Confianza Promedio",
+                t("Confianza Promedio", "Average Confidence", "Confiança Média"),
                 f"{user_stats['avg_confidence']:.2f}",
                 delta="+0.05"
             )
 
         with col4:
             st.metric(
-                "Ranking Global",
+                t("Ranking Global", "Global Rank", "Classificação Global"),
                 str(user_stats['rank']),
-                delta="+5 posiciones"
+                delta=f"+5 " + t("posiciones", "positions", "posições")
             )
 
     # ============ TAB 2: TABLAS ESTADÍSTICAS ============
     with tab2:
-        st.subheader("Estadísticas Descriptivas")
+        st.subheader(t("Estadísticas Descriptivas", "Descriptive Statistics", "Estatísticas Descritivas"))
 
         # Tabla de resumen
         col1, col2 = st.columns(2)
 
         with col1:
-            st.write("**Resumen de Desempeño**")
+            st.write(t("**Resumen de Desempeño**", "**Performance Summary**", "**Resumo de Desempenho**"))
             summary_table = pd.DataFrame({
-                'Métrica': ['Total', 'Correctas', 'Incorrectas', 'Precisión', 'Confianza Prom.', 'Ranking'],
-                'Valor': [
+                t('Métrica', 'Metric', 'Métrica'): [
+                    t('Total', 'Total', 'Total'),
+                    t('Correctas', 'Correct', 'Corretas'),
+                    t('Incorrectas', 'Incorrect', 'Incorretas'),
+                    t('Precisión', 'Accuracy', 'Precisão'),
+                    t('Confianza Prom.', 'Avg Confidence', 'Confiança Média'),
+                    t('Ranking', 'Rank', 'Classificação')
+                ],
+                t('Valor', 'Value', 'Valor'): [
                     str(user_stats['total_predictions']),
                     str(user_stats['correct_predictions']),
                     str(user_stats['total_predictions'] - user_stats['correct_predictions']),
@@ -1583,19 +1818,19 @@ def page_statistics():
                     str(user_stats['rank'])
                 ]
             })
-            st.dataframe(summary_table, use_container_width=True)
+            st.table(summary_table)
 
         with col2:
-            st.write("**Estadísticas Descriptivas de Predicciones**")
+            st.write(t("**Estadísticas Descriptivas de Predicciones**", "**Descriptive Statistics of Predictions**", "**Estatísticas Descritivas de Previsões**"))
             stats_table = create_descriptive_stats_table(predictions)
             if not stats_table.empty:
-                st.dataframe(stats_table, use_container_width=True)
+                st.table(stats_table)
             else:
-                st.info("No hay datos numéricos disponibles")
+                st.info(t("No hay datos numéricos disponibles", "No numerical data available", "Não hay dados numéricos disponíveis"))
 
     # ============ TAB 3: GRÁFICOS AVANZADOS ============
     with tab3:
-        st.subheader("Visualizaciones Avanzadas")
+        st.subheader(t("Visualizaciones Avanzadas", "Advanced Visualizations", "Visualizações Avançadas"))
 
         if predictions and len(predictions) > 0:
             df = pd.DataFrame(predictions)
@@ -1608,7 +1843,9 @@ def page_statistics():
                     confidence_data = df['confidence_level'].dropna().tolist()
                     fig_dist = create_distribution_plot(
                         confidence_data,
-                        "Distribución de Confianza (Histograma + Curva Normal)"
+                        t("Distribución de Confianza (Histograma + Curva Normal)",
+                          "Confidence Distribution (Histogram + Normal Curve)",
+                          "Distribuição de Confiança (Histograma + Curva Normal)")
                     )
                     st.plotly_chart(fig_dist, use_container_width=True)
 
@@ -1625,16 +1862,16 @@ def page_statistics():
                         line=dict(color='#667EEA', width=3)
                     ))
                     fig_cdf.update_layout(
-                        title="Función de Distribución Acumulada (CDF)",
-                        xaxis_title="Confianza",
-                        yaxis_title="Probabilidad",
+                        title=t("Función de Distribución Acumulada (CDF)", "Cumulative Distribution Function (CDF)", "Função de Distribuição Acumulada (CDF)"),
+                        xaxis_title=t("Confianza", "Confidence", "Confiança"),
+                        yaxis_title=t("Probabilidad", "Probability", "Probabilidade"),
                         height=400
                     )
                     st.plotly_chart(fig_cdf, use_container_width=True)
 
             # Gráfico 2: Serie Temporal
             if 'created_at' in df.columns:
-                st.subheader("Evolución en el Tiempo")
+                st.subheader(t("Evolución en el Tiempo", "Evolution over Time", "Evolução no Tempo"))
 
                 df['created_at'] = pd.to_datetime(df['created_at'], errors='coerce')
                 df_sorted = df.sort_values('created_at').dropna(subset=['created_at'])
@@ -1645,51 +1882,51 @@ def page_statistics():
 
                     fig_time = create_time_series_plot(
                         dates, values,
-                        "Evolución de Confianza en el Tiempo"
+                        t("Evolución de Confianza en el Tiempo", "Confidence Evolution over Time", "Evolução da Confiança no Tempo")
                     )
                     st.plotly_chart(fig_time, use_container_width=True)
 
             # Gráfico 3: Por Status
             if 'prediction_status' in df.columns:
-                st.subheader("Análisis por Status")
+                st.subheader(t("Análisis por Status", "Analysis by Status", "Análise por Status"))
 
                 status_counts = df['prediction_status'].value_counts()
                 fig_status = px.bar(
                     x=status_counts.index,
                     y=status_counts.values,
-                    title="Distribución por Status",
-                    labels={'x': 'Status', 'y': 'Cantidad'},
+                    title=t("Distribución por Status", "Distribution by Status", "Distribuição por Status"),
+                    labels={'x': t('Status', 'Status', 'Status'), 'y': t('Cantidad', 'Count', 'Quantidade')},
                     color_discrete_sequence=['#667EEA']
                 )
                 fig_status.update_layout(height=400)
                 st.plotly_chart(fig_status, use_container_width=True)
 
         else:
-            st.info("No hay suficientes datos para mostrar gráficos")
+            st.info(t("No hay suficientes datos para mostrar gráficos", "Not enough data to display charts", "Não há dados suficientes para exibir gráficos"))
 
     # ============ TAB 4: REPORTES ============
     with tab4:
-        st.subheader("📥 Generar Reportes")
+        st.subheader(t("📥 Generar Reportes", "📥 Generate Reports", "📥 Gerar Relatórios"))
 
         col1, col2 = st.columns(2)
 
         with col1:
-            st.write("**Reporte en PDF**")
-            if st.button("📄 Descargar PDF"):
+            st.write(t("**Reporte en PDF**", "**PDF Report**", "**Relatório em PDF**"))
+            if st.button(t("📄 Descargar PDF", "📄 Download PDF", "📄 Baixar PDF"), key="btn_dld_pdf"):
                 pdf_bytes = generate_predictions_report_pdf(predictions)
                 st.download_button(
-                    label="Descargar PDF",
+                    label=t("Descargar PDF", "Download PDF", "Baixar PDF"),
                     data=pdf_bytes,
                     file_name=f"predicciones_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
                     mime="application/pdf"
                 )
 
         with col2:
-            st.write("**Reporte en Excel**")
-            if st.button("📊 Descargar Excel"):
+            st.write(t("**Reporte en Excel**", "**Excel Report**", "**Relatório em Excel**"))
+            if st.button(t("📊 Descargar Excel", "📊 Download Excel", "📊 Baixar Excel"), key="btn_dld_excel"):
                 excel_bytes = generate_predictions_report_excel(predictions)
                 st.download_button(
-                    label="Descargar Excel",
+                    label=t("Descargar Excel", "Download Excel", "Baixar Excel"),
                     data=excel_bytes,
                     file_name=f"predicciones_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx",
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -1697,7 +1934,7 @@ def page_statistics():
 
     # ============ TAB 5: INSIGHTS ============
     with tab5:
-        st.subheader("💡 Insights y Recomendaciones")
+        st.subheader(t("💡 Insights y Recomendaciones", "💡 Insights and Recommendations", "💡 Insights e Recomendações"))
 
         accuracy = user_stats.get('accuracy_rate', 0)
         confidence = user_stats.get('avg_confidence', 0)
@@ -1705,45 +1942,45 @@ def page_statistics():
         col1, col2 = st.columns(2)
 
         with col1:
-            st.write("**Análisis de Rendimiento**")
+            st.write(t("**Análisis de Rendimiento**", "**Performance Analysis**", "**Análise de Desempenho**"))
 
             if accuracy >= 75:
-                st.success("✅ **EXCELENTE** - Tu precisión es superior al 75%")
-                insight1 = "Mantén tu estrategia actual, has encontrado un buen patrón."
+                st.success(t("✅ **EXCELENTE** - Tu precisión es superior al 75%", "✅ **EXCELLENT** - Your accuracy is above 75%", "✅ **EXCELENTE** - Sua precisão é superior a 75%"))
+                insight1 = t("Mantén tu estrategia actual, has encontrado un buen patrón.", "Maintain your current strategy, you have found a good pattern.", "Mantenha sua estratégia atual, você encontrou um bom padrão.")
             elif accuracy >= 60:
-                st.info("⚠️ **BUENO** - Tu precisión está sobre el promedio")
-                insight1 = "Continúa mejorando, hay espacio para optimizar."
+                st.info(t("⚠️ **BUENO** - Tu precisión está sobre el promedio", "⚠️ **GOOD** - Your accuracy is above average", "⚠️ **BOM** - Sua precisão está acima da média"))
+                insight1 = t("Continúa mejorando, hay espacio para optimizar.", "Keep improving, there is room to optimize.", "Continue melhorando, há espaço para otimizar.")
             else:
-                st.warning("⚠️ **DESARROLLO** - Tu precisión está por debajo del 60%")
-                insight1 = "Revisa tu metodología de análisis."
+                st.warning(t("⚠️ **DESARROLLO** - Tu precisión está por debajo del 60%", "⚠️ **DEVELOPMENT** - Your accuracy is below 60%", "⚠️ **DESENVOLVIMENTO** - Sua precisão está abaixo de 60%"))
+                insight1 = t("Revisa tu metodología de análisis.", "Review your analysis methodology.", "Revise sua metodologia de análise.")
 
             st.write(insight1)
 
         with col2:
-            st.write("**Análisis de Confianza**")
+            st.write(t("**Análisis de Confianza**", "**Confidence Analysis**", "**Análise de Confiança**"))
 
             if confidence >= 0.75:
-                st.success("✅ Confianza bien calibrada (>0.75)")
-                insight2 = "Tu confianza es realista con tu precisión."
+                st.success(t("✅ Confianza bien calibrada (>0.75)", "✅ Well-calibrated confidence (>0.75)", "✅ Confiança bem calibrada (>0.75)"))
+                insight2 = t("Tu confianza es realista con tu precisión.", "Your confidence is realistic with your accuracy.", "Sua confiança é realista com sua precisão.")
             elif confidence >= 0.6:
-                st.info("⚠️ Confianza moderada (0.60-0.75)")
-                insight2 = "Considera si tu confianza refleja tu precisión."
+                st.info(t("⚠️ Confianza moderada (0.60-0.75)", "⚠️ Moderate confidence (0.60-0.75)", "⚠️ Confiança moderada (0.60-0.75)"))
+                insight2 = t("Considera si tu confianza refleja tu precisión.", "Consider whether your confidence reflects your accuracy.", "Considere se sua confiança reflete sua precisão.")
             else:
-                st.warning("⚠️ Confianza baja (<0.60)")
-                insight2 = "Aumenta confianza cuando tengas análisis sólidos."
+                st.warning(t("⚠️ Confianza baja (<0.60)", "⚠️ Low confidence (<0.60)", "⚠️ Confiança baixa (<0.60)"))
+                insight2 = t("Aumenta confianza cuando tengas análisis sólidos.", "Increase confidence when you have solid analysis.", "Aumente a confiança quando tiver análises sólidas.")
 
             st.write(insight2)
 
         st.divider()
 
-        st.write("**Recomendaciones Personalizadas**")
+        st.write(t("**Recomendaciones Personalizadas**", "**Personalized Recommendations**", "**Recomendações Personalizadas**"))
         recommendations = [
-            "🔍 Analiza tus predicciones incorrectas para identificar patrones",
-            "📚 Aumenta confianza solo cuando tengas datos sólidos de respaldo",
-            "🎯 Diversifica tus predicciones entre diferentes deportes y ligas",
-            "📊 Mantén un registro detallado de tus análisis y resultados",
-            "⏱️ Revisa tu rendimiento regularmente (semanal/mensual)",
-            "💡 Considera variables externas: lesiones, clima, forma del equipo"
+            t("🔍 Analiza tus predicciones incorrectas para identificar patrones", "🔍 Analyze your incorrect predictions to identify patterns", "🔍 Analise suas previsões incorretas para identificar padrões"),
+            t("📚 Aumenta confianza solo cuando tengas datos sólidos de respaldo", "📚 Increase confidence only when you have solid backup data", "📚 Aumente a confiança apenas quando tiver dados de apoio sólidos"),
+            t("🎯 Diversifica tus predicciones entre diferentes deportes y ligas", "🎯 Diversify your predictions across different sports and leagues", "🎯 Diversifique suas previsões entre diferentes esportes e ligas"),
+            t("📊 Mantén un registro detallado de tus análisis y resultados", "📊 Maintain a detailed record of your analyses and results", "📊 Mantenha um registro detalhado de suas análises e resultados"),
+            t("⏱️ Revisa tu rendimiento regularmente (semanal/mensual)", "⏱️ Review your performance regularly (weekly/monthly)", "⏱️ Revise seu desempenho regularmente (semanal/mensal)"),
+            t("💡 Considera variables externas: lesiones, clima, forma del equipo", "💡 Consider external variables: injuries, weather, team form", "💡 Considere variáveis externas: lesões, clima, forma da equipe")
         ]
 
         for rec in recommendations:
@@ -1751,39 +1988,39 @@ def page_statistics():
 
 def page_alerts():
     """Página de alertas"""
-    st.title("🔔 Alertas y Notificaciones")
+    st.title(t("🔔 Alertas y Notificaciones", "🔔 Alerts and Notifications", "🔔 Alertas e Notificações"))
 
     alerts_data = [
         {
             'type': 'partido',
             'icon': '⚽',
-            'title': 'Nuevo partido disponible',
-            'message': 'Real Madrid vs Barcelona - Predicción IA lista',
-            'time': 'Hace 2 horas',
+            'title': t('Nuevo partido disponible', 'New match available', 'Novo jogo disponível'),
+            'message': t('Real Madrid vs Barcelona - Predicción IA lista', 'Real Madrid vs Barcelona - AI Prediction ready', 'Real Madrid vs Barcelona - Previsão de IA pronta'),
+            'time': t('Hace 2 horas', '2 hours ago', 'Há 2 horas'),
             'read': False
         },
         {
             'type': 'prediccion',
             'icon': '🤖',
-            'title': 'Actualización de predicción IA',
-            'message': 'Nueva predicción para Manchester City vs Liverpool',
-            'time': 'Hace 5 horas',
+            'title': t('Actualización de predicción IA', 'AI prediction update', 'Atualização de previsão de IA'),
+            'message': t('Nueva predicción para Manchester City vs Liverpool', 'New prediction for Manchester City vs Liverpool', 'Nova previsão para Manchester City vs Liverpool'),
+            'time': t('Hace 5 horas', '5 hours ago', 'Há 5 horas'),
             'read': True
         },
         {
             'type': 'competencia',
             'icon': '🏆',
-            'title': 'Competencia finaliza pronto',
-            'message': 'Liga Predictor Enero cierra en 2 días',
-            'time': 'Hace 1 día',
+            'title': t('Competencia finaliza pronto', 'Competition ending soon', 'Competição terminando em breve'),
+            'message': t('Liga Predictor Enero cierra en 2 días', 'January Predictor League closes in 2 days', 'Liga Predictor Janeiro fecha em 2 dias'),
+            'time': t('Hace 1 día', '1 day ago', 'Há 1 dia'),
             'read': False
         },
         {
             'type': 'ranking',
             'icon': '📈',
-            'title': 'Cambio en tu ranking',
-            'message': 'Subiste 5 posiciones en el ranking global',
-            'time': 'Hace 1 día',
+            'title': t('Cambio en tu ranking', 'Rank change', 'Mudança na sua classificação'),
+            'message': t('Subiste 5 posiciones en el ranking global', 'You rose 5 positions in the global ranking', 'Você subiu 5 posições no ranking global'),
+            'time': t('Hace 1 día', '1 day ago', 'Há 1 dia'),
             'read': True
         }
     ]
@@ -1791,11 +2028,12 @@ def page_alerts():
     col1, col2 = st.columns([3, 1])
 
     with col1:
-        st.subheader("Notificaciones Recientes")
+        st.subheader(t("Notificaciones Recientes", "Recent Notifications", "Notificações Recentes"))
 
         for alert in alerts_data:
-            status_icon = "📬" if alert['read'] else "📭"
-            bg_color = "#f0f0f0" if alert['read'] else "#fff3cd"
+            status_icon = "📩" if alert['read'] else "📧"
+            bg_color = ("#1e293b" if st.session_state.theme == "dark" else "#f1f5f9") if alert['read'] else ("#4c3a2b" if st.session_state.theme == "dark" else "#ffedd5")
+            text_color = "#f8fafc" if st.session_state.theme == "dark" else "#1e293b"
 
             col_alert = st.columns([1, 10, 1])
 
@@ -1804,7 +2042,7 @@ def page_alerts():
 
             with col_alert[1]:
                 st.markdown(
-                    f"<div style='background: {bg_color}; padding: 15px; border-radius: 5px;'>"
+                    f"<div style='background: {bg_color}; padding: 15px; border-radius: 5px; color: {text_color};'>"
                     f"<b>{alert['title']}</b><br>"
                     f"{alert['message']}<br>"
                     f"<small>{alert['time']}</small>"
@@ -1816,27 +2054,29 @@ def page_alerts():
                 st.write(status_icon)
 
     with col2:
-        st.subheader("Configurar Alertas")
+        st.subheader(t("Configurar Alertas", "Configure Alerts", "Configurar Alertas"))
 
-        st.checkbox("⚽ Nuevos partidos", value=True)
-        st.checkbox("🤖 Predicciones IA", value=True)
-        st.checkbox("🏆 Competencias", value=True)
-        st.checkbox("📈 Cambios ranking", value=True)
-        st.checkbox("💎 Ofertas Premium", value=False)
+        st.checkbox(t("⚽ Nuevos partidos", "⚽ New matches", "⚽ Novos jogos"), value=True, key="chk_alert_matches")
+        st.checkbox(t("🤖 Predicciones IA", "🤖 AI Predictions", "🤖 Previsões de IA"), value=True, key="chk_alert_ai")
+        st.checkbox(t("🏆 Competencias", "🏆 Competitions", "🏆 Competições"), value=True, key="chk_alert_comps")
+        st.checkbox(t("📈 Cambios ranking", "📈 Rank changes", "📈 Mudanças de classificação"), value=True, key="chk_alert_rank")
+        st.checkbox(t("💎 Ofertas Premium", "💎 Premium offers", "💎 Ofertas Premium"), value=False, key="chk_alert_premium")
 
-        if st.button("Guardar configuración"):
-            st.success("✅ Configuración guardada")
+        if st.button(t("Guardar configuración", "Save configuration", "Salvar configuração"), key="btn_save_alerts_config"):
+            st.success(t("✅ Configuración guardada", "✅ Configuration saved", "✅ Configuração salva"))
+
+
 
 def page_premium():
     """Página de suscripción premium"""
-    st.title("💎 SportsPredict Pro Premium")
+    st.title(t("💎 SportsPredict Pro Premium", "💎 SportsPredict Pro Premium", "💎 SportsPredict Pro Premium"))
 
     col1, col2, col3 = st.columns(3)
 
     with col1:
-        st.subheader("📦 Plan Free")
+        st.subheader(t("📦 Plan Free", "📦 Free Plan", "📦 Plano Free"))
 
-        st.markdown("""
+        st.markdown(t("""
         ✅ Predicciones IA básicas
         ✅ Competencias gratuitas
         ✅ Estadísticas básicas
@@ -1845,17 +2085,35 @@ def page_premium():
         ---
 
         **Precio:** Gratis
-        """)
+        """, """
+        ✅ Basic AI predictions
+        ✅ Free competitions
+        ✅ Basic statistics
+        ✅ Up to 50 predictions/month
+
+        ---
+
+        **Price:** Free
+        """, """
+        ✅ Previsões básicas de IA
+        ✅ Competições gratuitas
+        ✅ Estatísticas básicas
+        ✅ Até 50 previsões/mês
+
+        ---
+
+        **Preço:** Grátis
+        """))
 
         if st.session_state.user_tier != "free":
-            st.info("Tu plan actual: Premium")
+            st.info(t("Tu plan actual: Premium", "Your current plan: Premium", "Seu plano atual: Premium"))
         else:
-            st.success("Tu plan actual")
+            st.success(t("Tu plan actual", "Your current plan", "Seu plano atual"))
 
     with col2:
-        st.subheader("🌟 Plan Pro")
+        st.subheader(t("🌟 Plan Pro", "🌟 Pro Plan", "🌟 Plano Pro"))
 
-        st.markdown("""
+        st.markdown(t("""
         ✅ Todas las del plan Free
         ✅ Predicciones IA avanzadas
         ✅ Acceso a competencias premium
@@ -1868,17 +2126,43 @@ def page_premium():
 
         **Precio:** $4.99/mes
         *(o $49.99/año)*
-        """)
+        """, """
+        ✅ All Free plan features
+        ✅ Advanced AI predictions
+        ✅ Access to premium competitions
+        ✅ Detailed analysis
+        ✅ Customized PDF reports
+        ✅ Unlimited alerts
+        ✅ Up to 500 predictions/month
 
-        if st.button("🚀 Suscribirse a Pro", key="btn_pro"):
+        ---
+
+        **Price:** $4.99/month
+        *(or $49.99/year)*
+        """, """
+        ✅ Todos os recursos do plano Free
+        ✅ Previsões avançadas de IA
+        ✅ Acesso a competições premium
+        ✅ Análises detalhadas
+        ✅ Relatórios PDF personalizados
+        ✅ Alertas ilimitados
+        ✅ Até 500 previsões/mês
+
+        ---
+
+        **Preço:** $4.99/mês
+        *(ou $49.99/ano)*
+        """))
+
+        if st.button(t("🚀 Suscribirse a Pro", "🚀 Subscribe to Pro", "🚀 Assinar Pro"), key="btn_pro"):
             st.session_state.user_tier = "pro"
-            st.success("¡Bienvenido a SportsPredict Pro!")
+            st.success(t("¡Bienvenido a SportsPredict Pro!", "Welcome to SportsPredict Pro!", "Bem-vindo ao SportsPredict Pro!"))
             st.balloons()
 
     with col3:
-        st.subheader("👑 Plan Elite")
+        st.subheader(t("👑 Plan Elite", "👑 Elite Plan", "👑 Plano Elite"))
 
-        st.markdown("""
+        st.markdown(t("""
         ✅ Todas las del plan Pro
         ✅ Acceso a análisis IA en tiempo real
         ✅ Consultas personalizadas con expertos
@@ -1891,38 +2175,62 @@ def page_premium():
 
         **Precio:** $9.99/mes
         *(o $99.99/año)*
-        """)
+        """, """
+        ✅ All Pro plan features
+        ✅ Access to real-time AI analysis
+        ✅ Personalized expert consultations
+        ✅ Complete historical data
+        ✅ Unlimited predictions
+        ✅ Priority in competitions
+        ✅ Betting discounts
 
-        if st.button("👑 Suscribirse a Elite", key="btn_elite"):
+        ---
+
+        **Price:** $9.99/month
+        *(or $99.99/year)*
+        """, """
+        ✅ Todos os recursos do plano Pro
+        ✅ Acesso a análises de IA em tempo real
+        ✅ Consultas personalizadas com especialistas
+        ✅ Dados históricos completos
+        ✅ Previsões ilimitadas
+        ✅ Prioridade em competições
+        ✅ Descontos em apostas
+
+        ---
+
+        **Preço:** $9.99/mês
+        *(ou $99.99/ano)*
+        """))
+
+        if st.button(t("👑 Suscribirse a Elite", "👑 Subscribe to Elite", "👑 Assinar Elite"), key="btn_elite"):
             st.session_state.user_tier = "elite"
-            st.success("¡Bienvenido a SportsPredict Elite!")
+            st.success(t("¡Bienvenido a SportsPredict Elite!", "Welcome to SportsPredict Elite!", "Bem-vindo ao SportsPredict Elite!"))
             st.balloons()
 
     st.divider()
 
-    st.subheader("Beneficios Adicionales")
+    st.subheader(t("Beneficios Adicionales", "Additional Benefits", "Benefícios Adicionais"))
 
     benefits = pd.DataFrame({
-        'Característica': [
-            'Predicciones IA básicas',
-            'Predicciones IA avanzadas',
-            'Acceso a competencias',
-            'Reportes PDF',
-            'Alertas personalizadas',
-            'Análisis histórico',
-            'Soporte prioritario',
-            'Consulta con expertos'
+        t('Característica', 'Feature', 'Recurso'): [
+            t('Predicciones IA básicas', 'Basic AI Predictions', 'Previsões básicas de IA'),
+            t('Predicciones IA avanzadas', 'Advanced AI Predictions', 'Previsões avançadas de IA'),
+            t('Acceso a competencias', 'Competitions Access', 'Acesso a competições'),
+            t('Reportes PDF', 'PDF Reports', 'Relatórios PDF'),
+            t('Alertas personalizadas', 'Personalized Alerts', 'Alertas personalizadas'),
+            t('Análisis histórico', 'Historical Analysis', 'Análise histórica'),
+            t('Soporte prioritario', 'Priority Support', 'Suporte prioritário'),
+            t('Consulta con expertos', 'Expert Consultation', 'Consulta com especialistas')
         ],
         'Free': ['✅', '❌', '✅', '❌', '❌', '❌', '❌', '❌'],
         'Pro': ['✅', '✅', '✅', '✅', '✅', '✅', '❌', '❌'],
         'Elite': ['✅', '✅', '✅', '✅', '✅', '✅', '✅', '✅']
     })
 
-    st.dataframe(benefits, use_container_width=True)
+    st.table(benefits)
 
-# ============================================================================
-# MENÚ PRINCIPAL Y NAVEGACIÓN
-# ============================================================================
+
 
 def check_login():
     if 'logged_in' not in st.session_state:
@@ -2065,12 +2373,16 @@ def set_sidebar_visibility(visible: bool):
 
 def page_create_prediction():
     """Página para crear predicciones manuales"""
-    st.title("➕ Crear Predicción Manual")
-    st.markdown("Ingresa un partido para que la Inteligencia Artificial analice quién ganará basándose en su historial estadístico.")
+    st.title(t("➕ Crear Predicción Manual", "➕ Create Manual Prediction", "➕ Criar Previsão Manual"))
+    st.markdown(t(
+        "Ingresa un partido para que la Inteligencia Artificial analice quién ganará basándose en su historial estadístico.",
+        "Enter a match for the Artificial Intelligence to analyze who will win based on its statistical history.",
+        "Insira um jogo para que a Inteligência Artificial analise quem vencerá com base no seu histórico estatístico."
+    ))
     
     col1, col2 = st.columns([1, 2])
     with col1:
-        sport = st.selectbox("Selecciona el Deporte", ["Futbol", "NBA", "MLB"])
+        sport = st.selectbox(t("Selecciona el Deporte", "Select Sport", "Selecione o Esporte"), ["Futbol", "NBA", "MLB"])
         
     st.divider()
     
@@ -2079,62 +2391,66 @@ def page_create_prediction():
     col1, col2, col3 = st.columns([2, 1, 2])
     
     with col1:
-        home_team = st.selectbox("Equipo Local" if sport != 'MLB' else "Equipo 1", teams, key="home_select")
+        home_team = st.selectbox(t("Equipo Local", "Home Team", "Equipe Local") if sport != 'MLB' else t("Equipo 1", "Team 1", "Equipe 1"), teams, key="home_select")
         pitcher1 = None
         if sport == 'MLB':
             pitchers = get_pitchers()
-            pitcher1 = st.selectbox("Lanzador Abridor 1", pitchers, key="p1_select")
+            pitcher1 = st.selectbox(t("Lanzador Abridor 1", "Starting Pitcher 1", "Arremessador Inicial 1"), pitchers, key="p1_select")
             
     with col3:
         # Default al segundo equipo para evitar que local y visitante sean el mismo al inicio
         default_away = teams[1] if len(teams) > 1 else teams[0]
-        away_team = st.selectbox("Equipo Visitante" if sport != 'MLB' else "Equipo 2", teams, index=teams.index(default_away) if default_away in teams else 0, key="away_select")
+        away_team = st.selectbox(t("Equipo Visitante", "Away Team", "Equipe Visitante") if sport != 'MLB' else t("Equipo 2", "Team 2", "Equipe 2"), teams, index=teams.index(default_away) if default_away in teams else 0, key="away_select")
         pitcher2 = None
         if sport == 'MLB':
-            pitcher2 = st.selectbox("Lanzador Abridor 2", pitchers, key="p2_select")
+            pitcher2 = st.selectbox(t("Lanzador Abridor 2", "Starting Pitcher 2", "Arremessador Inicial 2"), pitchers, key="p2_select")
             
     with col2:
         st.markdown("<h2 style='text-align: center; margin-top: 30px;'>VS</h2>", unsafe_allow_html=True)
         
-    date_match = st.date_input("Fecha del Partido")
+    date_match = st.date_input(t("Fecha del Partido", "Match Date", "Data do Jogo"))
     
-    if st.button("🔮 Generar Predicción IA", type="primary", use_container_width=True):
+    if st.button(t("🔮 Generar Predicción IA", "🔮 Generate AI Prediction", "🔮 Gerar Previsão de IA"), type="primary", use_container_width=True):
         if home_team == away_team:
-            st.error("El equipo local y visitante no pueden ser el mismo.")
+            st.error(t("El equipo local y visitante no pueden ser el mismo.", "Home and away teams cannot be the same.", "O time da casa e o visitante não podem ser o mesmo."))
             return
             
-        with st.spinner("Analizando historial y ejecutando modelos..."):
+        with st.spinner(t("Analizando historial y ejecutando modelos...", "Analyzing history and running models...", "Analisando histórico e executando modelos...")):
             try:
                 if sport == 'Futbol':
                     probs = predict_football(home_team, away_team)
                     # Probabilidades principales: local, empate, visitante
                     main_probs = {k: probs[k] for k in ['visitante', 'empate', 'local']}
-                    labels = ['Visitante', 'Empate', 'Local']
+                    labels = [t('Visitante', 'Away', 'Visitante'), t('Empate', 'Draw', 'Empate'), t('Local', 'Home', 'Local')]
                     values = [main_probs['visitante']*100, main_probs['empate']*100, main_probs['local']*100]
                     pred_label = max(main_probs, key=main_probs.get)
                     
-                    over_str = "MÁS de 2.5" if probs.get('over25', 0) > 0.5 else "MENOS de 2.5"
-                    btts_str = "SÍ" if probs.get('btts', 0) > 0.5 else "NO"
+                    over_str = t("MÁS de 2.5", "OVER 2.5", "MAIS de 2.5") if probs.get('over25', 0) > 0.5 else t("MENOS de 2.5", "UNDER 2.5", "MENOS de 2.5")
+                    btts_str = t("SÍ", "YES", "SIM") if probs.get('btts', 0) > 0.5 else t("NO", "NO", "NÃO")
                     pred_label_db = f"{pred_label.upper()} | Over2.5: {over_str} ({probs.get('over25',0)*100:.1f}%) | BTTS: {btts_str} ({probs.get('btts',0)*100:.1f}%)"
                 elif sport == 'NBA':
                     probs = predict_nba(home_team, away_team)
-                    labels = ['Visitante', 'Local']
+                    labels = [t('Visitante', 'Away', 'Visitante'), t('Local', 'Home', 'Local')]
                     values = [probs['visitante']*100, probs['local']*100]
                     pred_label = max(probs, key=probs.get)
                 elif sport == 'MLB':
                     probs = predict_mlb(home_team, away_team, pitcher1, pitcher2)
-                    labels = ['Equipo 2', 'Equipo 1']
+                    labels = [t('Equipo 2', 'Team 2', 'Equipe 2'), t('Equipo 1', 'Team 1', 'Equipe 1')]
                     values = [probs['visitante']*100, probs['local']*100]
                     pred_label = max(probs, key=probs.get)
                     pred_label_db = pred_label.upper()
                     
-                st.success(f"¡Predicción generada! El modelo se inclina por: **{pred_label.upper()}**")
+                st.success(t(f"¡Predicción generada! El modelo se inclina por: **{pred_label.upper()}**",
+                             f"Prediction generated! The model leans towards: **{pred_label.upper()}**",
+                             f"Previsão gerada! O modelo se inclina por: **{pred_label.upper()}**"))
                 if sport == 'Futbol':
-                    st.info(f"⚽ **Goles:** {over_str} ({probs.get('over25',0)*100:.1f}%) | **Ambos Anotan:** {btts_str} ({probs.get('btts',0)*100:.1f}%)")
+                    st.info(t(f"⚽ **Goles:** {over_str} ({probs.get('over25',0)*100:.1f}%) | **Ambos Anotan:** {btts_str} ({probs.get('btts',0)*100:.1f}%)",
+                              f"⚽ **Goals:** {over_str} ({probs.get('over25',0)*100:.1f}%) | **Both Teams to Score:** {btts_str} ({probs.get('btts',0)*100:.1f}%)",
+                              f"⚽ **Gols:** {over_str} ({probs.get('over25',0)*100:.1f}%) | **Ambas Marcam:** {btts_str} ({probs.get('btts',0)*100:.1f}%)"))
                 
                 # Visualización
                 fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.5, marker_colors=['#f5576c', '#aaaaaa', '#667eea'])])
-                fig.update_layout(title_text="Probabilidades de Victoria")
+                fig.update_layout(title_text=t("Probabilidades de Victoria", "Win Probabilities", "Probabilidades de Vitória"))
                 st.plotly_chart(fig, use_container_width=True)
                 
                 # Guardar el partido futuro
@@ -2151,13 +2467,17 @@ def page_create_prediction():
                             is_manual=True,
                             ai_data=json.dumps({"prediccion_ia": pred_label, "probs": probs})
                         )
-                        st.success("🌟 (Elite) Predicción guardada en tu perfil personal automáticamente.")
+                        st.success(t("🌟 (Elite) Predicción guardada en tu perfil personal automáticamente.",
+                                     "🌟 (Elite) Prediction automatically saved to your personal profile.",
+                                     "🌟 (Elite) Previsão salva automaticamente no seu perfil pessoal."))
                     except Exception as e:
-                        st.warning(f"No se pudo guardar en el perfil Elite: {e}")
+                        st.warning(t(f"No se pudo guardar en el perfil Elite: {e}", f"Could not save to Elite profile: {e}", f"Não foi possível salvar no perfil Elite: {e}"))
 
-                st.info("Este partido ha sido guardado y aparecerá en el Dashboard.")
+                st.info(t("Este partido ha sido guardado y aparecerá en el Dashboard.", "This match has been saved and will appear on the Dashboard.", "Este jogo foi salvo e aparecerá no Dashboard."))
             except Exception as e:
-                st.error(f"Error generando predicción: {str(e)}")
+                st.error(t(f"Error generando predicción: {str(e)}", f"Error generating prediction: {str(e)}", f"Erro ao gerar previsão: {str(e)}"))
+
+
 
 def main():
     """Función principal"""
@@ -2170,38 +2490,64 @@ def main():
     set_sidebar_visibility(True)
 
     # Sidebar
-    with st.sidebar:
-        st.title("⚽ SportsPredict Pro")
-        st.markdown("---")
+    # Menú de navegación moderno
+    pages = [
+        st.Page(page_dashboard, title=t("Dashboard", "Dashboard", "Dashboard"), icon="🏠"),
+        st.Page(page_create_prediction, title=t("Crear Predicción", "Create Prediction", "Criar Previsão"), icon="➕"),
+        st.Page(page_my_predictions, title=t("Mis Predicciones", "My Predictions", "Minhas Previsões"), icon="📊"),
+        st.Page(page_ai_predictions, title=t("Predicciones IA", "AI Predictions", "Previsões IA"), icon="🤖"),
+        st.Page(page_competitions, title=t("Competencias", "Competitions", "Competições"), icon="🏆"),
+        st.Page(page_statistics, title=t("Estadísticas", "Statistics", "Estatísticas"), icon="📈"),
+        st.Page(page_alerts, title=t("Alertas", "Alerts", "Alertas"), icon="🔔"),
+        st.Page(page_premium, title=t("Premium", "Premium", "Premium"), icon="💎")
+    ]
 
-        # Información del usuario
+    pg = st.navigation(pages, position="hidden")
+
+    with st.sidebar:
+        # 1. Logo de la página arriba de todo
+        st.markdown(
+            """
+            <div class="sidebar-logo-container">
+                <span class="sidebar-logo-icon">⚽</span>
+                <span class="sidebar-logo-text">SportsPredict <span class="pro-tag">Pro</span></span>
+            </div>
+            """, 
+            unsafe_allow_html=True
+        )
+        
+        # 2. Etiqueta estática (sin desplegable)
+        st.markdown(
+            f"<div class='sidebar-nav-label'>{t('Navegación Principal', 'Main Navigation', 'Navegação Principal')}</div>", 
+            unsafe_allow_html=True
+        )
+        
+        # 3. Tarjetas de navegación (st.page_link)
+        for page in pages:
+            st.page_link(page, label=page.title, icon=page.icon, use_container_width=True)
+            
+        st.divider()
+        
+        # 4. Información del usuario (Tarjeta moderna)
         user_id = st.session_state.user_id or ""
-        st.write(t(f"**Usuario ID:** `{user_id[:12]}...`", f"**User ID:** `{user_id[:12]}...`", f"**ID do Usuário:** `{user_id[:12]}...`"))
-        st.write(t(f"**Plan:** `{st.session_state.user_tier.upper()}`", f"**Plan:** `{st.session_state.user_tier.upper()}`", f"**Plano:** `{st.session_state.user_tier.upper()}`"))
-        st.write(t(f"**Rol:** `{st.session_state.user_role.upper()}`", f"**Role:** `{st.session_state.user_role.upper()}`", f"**Função:** `{st.session_state.user_role.upper()}`"))
+        st.markdown(
+            f"""
+            <div class="user-info-card">
+                <div class="user-info-item">👤 <b>{t('Usuario', 'User', 'Usuário')}:</b> <code>{user_id[:12]}...</code></div>
+                <div class="user-info-item">💳 <b>{t('Plan', 'Plan', 'Plano')}:</b> <span class="premium-badge" style="padding: 2px 8px; font-size: 0.75rem;">{st.session_state.user_tier.upper()}</span></div>
+                <div class="user-info-item">🛡️ <b>{t('Rol', 'Role', 'Função')}:</b> <code>{st.session_state.user_role.upper()}</code></div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+        
+        # 5. Botón de Cerrar Sesión
         if st.button(t("🚪 Cerrar Sesión", "🚪 Log Out", "🚪 Sair"), use_container_width=True, type="secondary"):
             logout()
+            
         st.divider()
-
-    # Menú de navegación moderno
-    pages = {
-        t("Navegación Principal", "Main Navigation", "Navegação Principal"): [
-            st.Page(page_dashboard, title=t("Dashboard", "Dashboard", "Dashboard"), icon="🏠"),
-            st.Page(page_create_prediction, title=t("Crear Predicción", "Create Prediction", "Criar Previsão"), icon="➕"),
-            st.Page(page_my_predictions, title=t("Mis Predicciones", "My Predictions", "Minhas Previsões"), icon="📊"),
-            st.Page(page_ai_predictions, title=t("Predicciones IA", "AI Predictions", "Previsões IA"), icon="🤖"),
-            st.Page(page_competitions, title=t("Competencias", "Competitions", "Competições"), icon="🏆"),
-            st.Page(page_statistics, title=t("Estadísticas", "Statistics", "Estatísticas"), icon="📈"),
-            st.Page(page_alerts, title=t("Alertas", "Alerts", "Alertas"), icon="🔔"),
-            st.Page(page_premium, title=t("Premium", "Premium", "Premium"), icon="💎")
-        ]
-    }
-
-    pg = st.navigation(pages)
-
-    # Información adicional y botón de cerrar sesión al final del sidebar
-    with st.sidebar:
-        st.divider()
+        
+        # 6. Información adicional / Pie de página
         st.write(t("### 📱 Información", "### 📱 Information", "### 📱 Informações"))
         st.info(t(
             "**SportsPredict Pro v1.0**\n\nPlataforma de predicciones deportivas con IA\n\n🔗 [Sitio Web](https://example.com)\n📧 [Contacto](mailto:info@example.com)",
